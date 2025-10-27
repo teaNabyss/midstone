@@ -14,7 +14,7 @@ Scene2::Scene2(SDL_Window* sdlWindow_) :
 	, xAxis(30.0f)
 	, yAxis(15.0f)
 {
-	//bruh
+	//kukareku
 }
 
 Scene2::~Scene2() {
