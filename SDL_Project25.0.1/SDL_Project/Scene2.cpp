@@ -20,7 +20,7 @@ Scene2::Scene2(SDL_Window* sdlWindow_) :
 Scene2::~Scene2() {
 
 }
-
+bool flipHorizontal = false;
 bool Scene2::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
@@ -46,7 +46,7 @@ bool Scene2::OnCreate() {
 	player->mass = 2.0f;
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 
-	playerScale = 4.0f; //used to scale image, and in collision check
+	playerScale = 4.0f; //used to scale image, and in collision check\
 
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
@@ -92,15 +92,16 @@ void Scene2::OnDestroy() {
 }
 
 void Scene2::HandleEvents(const SDL_Event& event)
-{
+{	
 	switch (event.type) {
 	case SDL_EVENT_KEY_DOWN:
 		if (event.key.key == SDLK_A) {
 			keyAdown = true;
+			flipHorizontal = false;
 		}
 		if (event.key.key == SDLK_D) {
 			keyDdown = true;
-
+			flipHorizontal = true;
 		}
 		if (event.key.key == SDLK_SPACE) {
 			SpaceDown = true;
@@ -129,6 +130,7 @@ void Scene2::HandleEvents(const SDL_Event& event)
 
 void Scene2::Update(const float deltaTime) {
 	if (deltaTime < VERY_SMALL) return;
+	
 
 	// Gravity
 	Vec3 gravAccel(0.0f, -9.8f, 0.0f);
@@ -180,7 +182,8 @@ void Scene2::Render() const {
 	square.h = player->GetSurface()->h / playerScale;
 	square.x -= square.w;
 	square.y -= square.h * 0.25f;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, 
+		(flipHorizontal) ?SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 
 	// Update the screen
 	SDL_RenderPresent(renderer);
