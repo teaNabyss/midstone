@@ -18,6 +18,7 @@ private:
 	SDL_Renderer* renderer;
 
 	Entity* player;
+	Entity* box;
 
 	bool running = 0;
 	bool keyAdown = false;

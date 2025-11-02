@@ -11,6 +11,7 @@ Scene2::Scene2(SDL_Window* sdlWindow_) :
 	window(sdlWindow_)
 	, renderer(nullptr)
 	, player(nullptr)
+	, box(nullptr)
 	, xAxis(30.0f)
 	, yAxis(15.0f)
 {
@@ -46,7 +47,11 @@ bool Scene2::OnCreate() {
 	player->mass = 2.0f;
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 
-	playerScale = 4.0f; //used to scale image, and in collision check\
+	playerScale = 4.0f; //used to scale image, and in collision check
+
+	box = new Entity();
+	box->pos = Vec3(10.0f, 1.0f, 0.0f);
+	box->SetImage("textures/crate.png", renderer);
 
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
@@ -89,6 +94,10 @@ void Scene2::OnDestroy() {
 
 	delete player;
 	player = nullptr;
+
+	delete box;
+	box = nullptr;
+
 }
 
 void Scene2::HandleEvents(const SDL_Event& event)
@@ -184,6 +193,17 @@ void Scene2::Render() const {
 	square.y -= square.h * 0.25f;
 	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, 
 		(flipHorizontal) ?SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+
+	//crate
+	screenCoords = projectionMatrix * box->pos;
+	// Set up sprite's position and size
+	square.x = screenCoords.x;
+	square.y = screenCoords.y;
+	square.w = player->GetSurface()->w / 3.5f;
+	square.h = player->GetSurface()->h / 4.5f;
+	square.x -= square.w;
+	square.y -= square.h * 0.25f;
+	SDL_RenderTextureRotated(renderer, box->GetTexture(), nullptr, &square, box->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	// Update the screen
 	SDL_RenderPresent(renderer);
