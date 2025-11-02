@@ -46,11 +46,12 @@ bool Scene2::OnCreate() {
 	player->pos = Vec3(2.0f, 1.0f, 0.0f);
 	player->mass = 2.0f;
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
-
+	
 	playerScale = 4.0f; //used to scale image, and in collision check
 
 	box = new Entity();
 	box->pos = Vec3(10.0f, 1.0f, 0.0f);
+	box->mass = 4.0f;
 	box->SetImage("textures/crate.png", renderer);
 
 	SDL_Init(SDL_INIT_AUDIO);
@@ -143,8 +144,10 @@ void Scene2::Update(const float deltaTime) {
 
 	// Gravity
 	Vec3 gravAccel(0.0f, -9.8f, 0.0f);
-	Vec3 gravForce = player->mass * gravAccel;
-	player->ApplyForce(gravForce);
+	Vec3 PlayerGravForce = player->mass * gravAccel;
+	player->ApplyForce(PlayerGravForce);
+	Vec3 BoxGravForce = box->mass * gravAccel;
+	box->ApplyForce(BoxGravForce);
 
 	// Jump
 	float g = 9.8f; //gravity
@@ -153,7 +156,7 @@ void Scene2::Update(const float deltaTime) {
 
 	if (SpaceDown && player->OnGround) {
 		player->vel.y = jumpForce;  // pushes up/ jump itsellf
-		player->ApplyForce(gravForce); // apllies gravity
+		player->ApplyForce(PlayerGravForce); // apllies gravity
 		player->OnGround = false;
 
 	}
@@ -176,6 +179,7 @@ void Scene2::Update(const float deltaTime) {
 
 	// Collision with borders
 	player->BorderCollision(playerScale);
+	box->BorderCollision(3.5f);
 }
 
 void Scene2::Render() const {
