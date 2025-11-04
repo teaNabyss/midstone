@@ -158,7 +158,6 @@ void Scene2::Update(const float deltaTime) {
 		player->vel.y = jumpForce;  // pushes up/ jump itsellf
 		player->ApplyForce(PlayerGravForce); // apllies gravity
 		player->OnGround = false;
-
 	}
 
 	// applies x motion on player
@@ -180,6 +179,65 @@ void Scene2::Update(const float deltaTime) {
 	// Collision with borders
 	player->BorderCollision(playerScale);
 	box->BorderCollision(3.5f);
+
+
+
+	// --- Player-Box collision (AABB) ---
+
+	float playerHalfSize = 1.0f; 
+	float boxHalfSizeW = 1.2f;   
+	float boxHalfSizeH = 1.0f;
+
+	Vec3 playerMin = player->pos - Vec3(playerHalfSize, playerHalfSize, 0.0f);
+	Vec3 playerMax = player->pos + Vec3(playerHalfSize, playerHalfSize, 0.0f);
+
+	Vec3 boxMin = box->pos - Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
+	Vec3 boxMax = box->pos + Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
+
+	bool overlapX = (playerMin.x <= boxMax.x) && (playerMax.x >= boxMin.x);
+	bool overlapY = (playerMin.y <= boxMax.y) && (playerMax.y >= boxMin.y);
+
+
+	if (overlapX && overlapY)
+	{
+		float overlapLeft = playerMax.x - boxMin.x;
+		float overlapRight = boxMax.x - playerMin.x;
+		float overlapTop = boxMax.y - playerMin.y;
+		float overlapBottom = playerMax.y - boxMin.y;
+
+		float minOverlapX = std::min(overlapLeft, overlapRight);
+		float minOverlapY = std::min(overlapTop, overlapBottom);
+
+		float correctionBlend = 0.2f;
+
+		if (minOverlapX < minOverlapY)
+		{
+			float targetX = player->pos.x;
+			if (overlapLeft < overlapRight)
+				targetX -= minOverlapX;
+			else
+				targetX += minOverlapX;
+
+			// blend towards target
+			player->pos.x = targetX;
+
+			player->vel.x = 0.0f;
+		}
+		else
+		{
+			float targetY = player->pos.y;
+			if (overlapBottom < overlapTop)
+			{
+				targetY = boxMax.y + playerScale;
+				player->OnGround = true;
+			}
+			else
+			{
+				targetY = boxMin.y - playerScale;
+			}
+		}
+	}
+
 }
 
 void Scene2::Render() const {
