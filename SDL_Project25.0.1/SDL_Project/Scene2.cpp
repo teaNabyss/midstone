@@ -22,14 +22,12 @@ Scene2::~Scene2() {
 
 }
 bool flipHorizontal = false;
+
 bool Scene2::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
 	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
-	Matrix4 ndc = MMath::viewportNDC(w, h);
-	Matrix4 ortho = MMath::orthographic(0.0f, xAxis, 0.0f, yAxis, -1.0f, 1.0f);
-	projectionMatrix = ndc * ortho;
+	SDL_GetWindowSize(window, &w, &h); //1280 X 720
 
 	//Create screen renderer
 	renderer = SDL_CreateRenderer(window, NULL);
@@ -54,6 +52,11 @@ bool Scene2::OnCreate() {
 	box->mass = 4.0f;
 	box->SetImage("textures/crate.png", renderer);
 
+	background = new Entity();
+	background->pos = Vec3(0.0f, 15.0f, 0.0f);
+	background->SetImage("textures/205028.png", renderer);
+	std::cout << "Backround created" << std::endl;
+
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
 
@@ -72,7 +75,7 @@ bool Scene2::OnCreate() {
 	MIX_PlayAudio(mixer, Music);
 	MIX_DestroyAudio(Music);
 
-
+	//camera(w, h);
 	return true;
 }
 
@@ -98,6 +101,9 @@ void Scene2::OnDestroy() {
 
 	delete box;
 	box = nullptr;
+
+	delete background;
+	background = nullptr;
 
 }
 
@@ -140,14 +146,10 @@ void Scene2::HandleEvents(const SDL_Event& event)
 
 void Scene2::Update(const float deltaTime) {
 	if (deltaTime < VERY_SMALL) return;
-	
 
 	// Gravity
 	Vec3 gravAccel(0.0f, -9.8f, 0.0f);
 	Vec3 PlayerGravForce = player->mass * gravAccel;
-	player->ApplyForce(PlayerGravForce);
-	Vec3 BoxGravForce = box->mass * gravAccel;
-	box->ApplyForce(BoxGravForce);
 
 	// Jump
 	float g = 9.8f; //gravity
@@ -161,7 +163,10 @@ void Scene2::Update(const float deltaTime) {
 	}
 
 	// applies x motion on player
-	player->xInput(keyAdown, keyDdown);
+	
+	//player->xInput(keyAdown, keyDdown);
+	
+	
 
 	// Physics update
 	player->Update(deltaTime);
@@ -238,15 +243,35 @@ void Scene2::Update(const float deltaTime) {
 		}
 	}
 
+
+	camera->Follow(player->pos);
+
+
+	//float move = player->speed * deltaTime;
+
+	//if (keyAdown) {
+	//	background->pos.x += move; 
+	//}
+	//else if (keyDdown) {
+	//	background->pos.x -= move; 
+	//}
 }
 
 void Scene2::Render() const {
 	SDL_RenderClear(renderer);
 
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
-	Vec3 screenCoords = projectionMatrix * player->pos;
-	// Set up sprite's position and size
+	Vec3 screenCoords = projectionMatrix * background->pos;
 	SDL_FRect square;
+	square.x = screenCoords.x;
+	square.y = screenCoords.y;
+	square.w = background->GetSurface()->w * 4.0f;
+	square.h = background->GetSurface()->h * 4.4f;
+	SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
+
+	Vec3 relativePos = camera->WorldToScreen(player->pos);
+	screenCoords = projectionMatrix * relativePos;
+	// Set up sprite's position and size
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
 	square.w = player->GetSurface()->w / playerScale;

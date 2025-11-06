@@ -22,7 +22,7 @@ public:
 	float speed = 15.0f;
 	float g = 9.8f;
 	float facingDir = 1;
-	bool OnGround = false;
+	bool OnGround = true;
 	// Let's pretend all entities are circles
 	float radius;
 

@@ -56,6 +56,7 @@ bool Scene1::OnCreate() {
 	rocket->SetImage("textures/rocket.png", renderer);
 	rocket->mass = 2.0f;
 
+
 	return true;
 }
 
@@ -87,6 +88,7 @@ void Scene1::HandleEvents(const SDL_Event& event)
 
 			running = 1;
 		}
+
 		break;
 
 	default:
@@ -114,7 +116,6 @@ void Scene1::Update(const float deltaTime) {
 
 		rocket->ApplyForce(netForceOnRocket);
 		rocket->Update(deltaTime);
-
 	}
 }
 
@@ -147,7 +148,6 @@ void Scene1::Render() const {
 	square.w = rocket->GetSurface()->w * rocketScale;
 	square.h = rocket->GetSurface()->h * rocketScale;
 	SDL_RenderTextureRotated(renderer, rocket->GetTexture(), nullptr, &square, rocket->angleDeg, nullptr, SDL_FLIP_NONE);
-
 
 	// Update the screen
 	SDL_RenderPresent(renderer);

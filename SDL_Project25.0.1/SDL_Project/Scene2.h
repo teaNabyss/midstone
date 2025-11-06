@@ -4,6 +4,7 @@
 #include <Matrix.h>
 #include "Scene.h"
 #include "Entity.h"
+#include "Camera.h"
 
 #include <SDL3/SDL_mixer.h>
 
@@ -19,6 +20,8 @@ private:
 
 	Entity* player;
 	Entity* box;
+	Entity* background;
+	Camera* camera;
 
 	bool running = 0;
 	bool keyAdown = false;

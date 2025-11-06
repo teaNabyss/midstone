@@ -39,23 +39,6 @@ void Entity::Update(float deltaTime)
 	pos += vel * deltaTime + 0.5f * acc * (deltaTime * deltaTime);
 }
 
-//void Entity::MoveLeft(float deltaTime)
-//{
-//	vel.x -= 2.0f * deltaTime;
-//}
-//
-//void Entity::MoveRight(float deltaTime)
-//{
-//	vel.x += 2.0f * deltaTime;
-//}
-
-//void Entity::MoveUP(float deltaTime)
-//{
-//	vel.y += 5.0f * deltaTime;	
-//}
-
-
-
 // Handle collision with window borders
 void Entity::BorderCollision(float playerScale) {
 	if (pos.x - playerScale / 2 < 0.0f) {
