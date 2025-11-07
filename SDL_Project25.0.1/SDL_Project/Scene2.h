@@ -15,7 +15,6 @@ private:
 	float xAxis;
 	float yAxis;
 
-	Matrix4 projectionMatrix;
 	SDL_Renderer* renderer;
 
 	Entity* player;

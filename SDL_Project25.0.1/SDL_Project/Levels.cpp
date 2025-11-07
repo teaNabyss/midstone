@@ -1,29 +1,25 @@
-#include "Scene0.h"
+#include "Levels.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <MMath.h>
 #include <iostream>
-#include "Entity.h"
 
 
 
-Scene0::Scene0(SDL_Window* sdlWindow_) :
+Levels::Levels(SDL_Window* sdlWindow_) :
 	window(sdlWindow_)
 	, renderer(nullptr)
-	, cliff(nullptr)
-	, flappy(nullptr)
-	, flappyScale(2.0f)
 	, xAxis(30.0f)
 	, yAxis(15.0f)
 {
 
 }
 
-Scene0::~Scene0(){
+Levels::~Levels(){
 
 }
 
-bool Scene0::OnCreate() {
+bool Levels::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
 	int w, h;
@@ -41,80 +37,23 @@ bool Scene0::OnCreate() {
 	//Initialize renderer color (black)
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	
-	// Create the objects that will be rendered on the screen
-	cliff = new Entity();
-	cliff->pos = Vec3(0.0f, 5.0f, 0.0f);
-	cliff->SetImage("textures/cliff.png", renderer);
-
-	flappy = new Entity();
-	flappy->pos = Vec3(0.0f, 5.0f, 0.0f);
-	flappy->SetImage("textures/flappyBird.png", renderer);
-
-
-
-
-	SDL_Init(SDL_INIT_AUDIO);
-	MIX_Init();
-
-	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
-
-	if (!mixer)
-	{
-		std::cout << "Failed to create mixer: %s\n", SDL_GetError();
-		return 0;
-	}
-
-	//// Load and play music
-	MIX_Audio* Music = MIX_LoadAudio(mixer, "Audio/CrabRave.wav", true);
-	MIX_SetMasterGain(mixer, master_volume);
-	MIX_PlayAudio(mixer, Music);
-	MIX_DestroyAudio(Music);
-
-
 	return true;
 }
 
-void Scene0::OnDestroy() {
+void Levels::OnDestroy() {
 	// Clean up the renderer
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
 		renderer = nullptr;
 	}
 
-	//// Turn off audio
-	if (mixer)
-	{
-		MIX_DestroyMixer(mixer);
-		MIX_Quit();
-	}
-
 	// Delete the objects created on the heap
 	// and set to the null pointer just to be safe
-	delete cliff;
-	cliff = nullptr;
-
-	delete flappy;
-	flappy = nullptr;
 }
 
-void Scene0::HandleEvents(const SDL_Event& event)
+void Levels::HandleEvents(const SDL_Event& event)
 {
 	switch (event.type) {
-	case SDL_EVENT_KEY_DOWN:
-		// Change angle of the ball
-		if (event.key.scancode == SDL_SCANCODE_O) {
-			flappy->angleDeg -= 10.0f;
-		}
-		if (event.key.scancode == SDL_SCANCODE_P) {
-			flappy->angleDeg += 10.0f;
-		}
-		if (event.key.scancode == SDL_SCANCODE_SPACE) {
-			float angleRad = flappy->angleDeg * (3.14159f / 180.0f);
-			flappy->vel.y -= sin(angleRad) * 30.0f;
-			flappy->vel.x += cos(angleRad) * 30.0f;
-		
-			running = 1;
-		}
 		break;
 
 	default:
@@ -122,19 +61,11 @@ void Scene0::HandleEvents(const SDL_Event& event)
 	}
 }
 
-void Scene0::Update(const float deltaTime) {
+void Levels::Update(const float deltaTime) {
 	/// Physics goes here	
-	if (running) {
-		Vec3 gravity = Vec3(0.0f, -9.8f, 0.0f); // F = m * a
-		Vec3 drag = -0.2f * flappy->vel; // F = -c * v
-		Vec3 wind = Vec3(-15.0f, 0.0f, 0.0f); // F = constant
-		Vec3 netForce = gravity + drag + wind;
-		flappy->ApplyForce(netForce); // gravity
-		flappy->Update(deltaTime);
-	}
 }
 
-void Scene0::Render() const {
+void Levels::Render() const {
 	SDL_RenderClear(renderer);
 
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix

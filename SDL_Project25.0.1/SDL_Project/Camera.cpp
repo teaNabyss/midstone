@@ -7,10 +7,8 @@ Camera::Camera() {
 }
 
 
-void Camera::SetView(int w, int h){
-    pos = { 0, 0, 0 };
-    width = w;
-    height = h;
+void Camera::SetView(Vec3 pos_){
+    pos = pos_;
     }
 
 void Camera::Follow(const Vec3& targetPos) {
@@ -21,3 +19,7 @@ void Camera::Follow(const Vec3& targetPos) {
 Vec3 Camera::WorldToScreen(const Vec3& worldPos) const {
     return { worldPos.x - pos.x, worldPos.y - pos.y, worldPos.z - pos.z };
 }
+
+//bool LoadBackground() {
+
+//}

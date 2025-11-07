@@ -14,9 +14,16 @@ public:
 
     Camera();
 
-    void SetView(int w, int h);
+    void SetView(Vec3 pos_);
 
     void Follow(const Vec3& targetPos);
 
     Vec3 WorldToScreen(const Vec3& worldPos) const;
+
+    bool LoadBackground();
+
+
+    Matrix4 GetProjectionMatrix() const {
+        return projectionMatrix;
+    }
 };
