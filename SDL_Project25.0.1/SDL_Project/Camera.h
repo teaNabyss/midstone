@@ -12,6 +12,8 @@ public:
     Matrix4 ortho;
     Matrix4 projectionMatrix;
 
+    SDL_Renderer* renderer;
+
     Camera();
 
     void SetView(Vec3 pos_);
@@ -21,6 +23,8 @@ public:
     Vec3 WorldToScreen(const Vec3& worldPos) const;
 
     bool LoadBackground();
+
+    void RenderLevel();
 
 
     Matrix4 GetProjectionMatrix() const {

@@ -15,7 +15,6 @@ Player::Player(SDL_Window* sdlWindow_) :
 	, xAxis(30.0f)
 	, yAxis(15.0f)
 {
-	//True outcome
 }
 
 Player::~Player() {
@@ -63,24 +62,6 @@ bool Player::OnCreate() {
 	// "camera"
 	camera = new Camera();
 
-	SDL_Init(SDL_INIT_AUDIO);
-	MIX_Init();
-
-	//TEST
-	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
-
-	if (!mixer)
-	{
-		std::cout << "Failed to create mixer: %s\n", SDL_GetError();
-		return 0;
-	}
-
-	//// Load and play music
-	MIX_Audio* Music = MIX_LoadAudio(mixer, "Audio/CrabRave.wav", true);
-	MIX_SetMasterGain(mixer, master_volume);
-	MIX_PlayAudio(mixer, Music);
-	MIX_DestroyAudio(Music);
-
 	return true;
 }
 
@@ -91,12 +72,7 @@ void Player::OnDestroy() {
 		renderer = nullptr;
 	}
 
-	//// Turn off audio
-	if (mixer)
-	{
-		MIX_DestroyMixer(mixer);
-		MIX_Quit();
-	}
+	
 
 	// Delete the objects created on the heap
 	// and set to the null pointer just to be safe

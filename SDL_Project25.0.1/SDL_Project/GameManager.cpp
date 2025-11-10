@@ -4,6 +4,7 @@
 #include "Scene0.h"
 #include "Scene1.h"
 #include "Player.h"
+#include "Levels.h"
 #include <iostream>
 
 GameManager::GameManager() {

@@ -36,7 +36,7 @@ void Wall::Update(float deltaTime)
 
 }
 
-void Wall::borderCollision(float playerScale) {
+void Wall::borderCollision() {
 
 }
 

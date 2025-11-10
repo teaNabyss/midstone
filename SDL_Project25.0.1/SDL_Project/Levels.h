@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <Matrix.h>
 #include "Scene.h"
+#include "Wall.h"
 
 #include <SDL3/SDL_mixer.h>
 
@@ -12,6 +13,9 @@ private:
 	SDL_Window *window;
 	float xAxis;
 	float yAxis;
+
+	Wall* background;
+	Wall* windowBorder;
 
 	Matrix4 projectionMatrix;
 	SDL_Renderer* renderer;

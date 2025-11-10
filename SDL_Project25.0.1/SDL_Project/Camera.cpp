@@ -12,10 +12,11 @@ void Camera::SetView(Vec3 pos_){
     }
 
 void Camera::Follow(const Vec3& targetPos) {
-    pos.x = targetPos.x - width * 0.5f;
-    pos.y = targetPos.y - height * 0.5f;
+    pos.x = targetPos.x - (width * 0.5f);
+    //pos.y = targetPos.y - (height * 0.5f);
 }
 
+//builds a rectangle that represents where the player should appear on the screen.
 Vec3 Camera::WorldToScreen(const Vec3& worldPos) const {
     return { worldPos.x - pos.x, worldPos.y - pos.y, worldPos.z - pos.z };
 }
@@ -23,3 +24,13 @@ Vec3 Camera::WorldToScreen(const Vec3& worldPos) const {
 //bool LoadBackground() {
 
 //}
+
+void Camera::RenderLevel() {
+
+    SDL_RenderClear(renderer);
+
+
+    SDL_RenderPresent(renderer);
+
+}
+

@@ -151,20 +151,24 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="NotYetGone.cpp" />
     <ClCompile Include="Scene0.cpp" />
     <ClCompile Include="Scene1.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="NotYetGone.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Scene0.h" />
     <ClInclude Include="Scene1.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="x64\Camera.h" />
   </ItemGroup>

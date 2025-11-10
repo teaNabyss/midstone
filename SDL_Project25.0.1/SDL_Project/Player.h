@@ -1,6 +1,8 @@
 #ifndef Player_H
 #define Player_H
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_image.h>
+
 #include <Matrix.h>
 #include "Scene.h"
 #include "Entity.h"
@@ -17,7 +19,6 @@ private:
 
 	SDL_Renderer* renderer;
 
-	Entity* player;
 	Entity* box;
 	Entity* background;
 	Camera* camera;
@@ -32,9 +33,9 @@ private:
 	float jumpHeight = 3.0f;
 
 
-	MIX_Mixer* mixer;
-	float master_volume = 0.1f;
+
 public:
+	Entity* player;
 	Player(SDL_Window* sdlWindow);
 	~Player();
 	bool OnCreate() override;
