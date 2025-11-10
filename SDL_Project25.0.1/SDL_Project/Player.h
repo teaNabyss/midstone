@@ -1,5 +1,5 @@
-#ifndef SCENE2_H
-#define SCENE2_H
+#ifndef Player_H
+#define Player_H
 #include <SDL3/SDL.h>
 #include <Matrix.h>
 #include "Scene.h"
@@ -9,7 +9,7 @@
 #include <SDL3/SDL_mixer.h>
 
 using namespace MATH;
-class Scene2 : public Scene {
+class Player : public Scene {
 private:
 	SDL_Window *window;
 	float xAxis;
@@ -35,8 +35,8 @@ private:
 	MIX_Mixer* mixer;
 	float master_volume = 0.1f;
 public:
-	Scene2(SDL_Window* sdlWindow);
-	~Scene2();
+	Player(SDL_Window* sdlWindow);
+	~Player();
 	bool OnCreate() override;
 	void OnDestroy() override;
 	void HandleEvents(const SDL_Event& event) override;

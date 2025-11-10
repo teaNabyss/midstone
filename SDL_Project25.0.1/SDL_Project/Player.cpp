@@ -1,4 +1,4 @@
-#include "Scene2.h"
+#include "Player.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <MMath.h>
@@ -7,7 +7,7 @@
 
 
 
-Scene2::Scene2(SDL_Window* sdlWindow_) :
+Player::Player(SDL_Window* sdlWindow_) :
 	window(sdlWindow_)
 	, renderer(nullptr)
 	, player(nullptr)
@@ -18,12 +18,12 @@ Scene2::Scene2(SDL_Window* sdlWindow_) :
 	//True outcome
 }
 
-Scene2::~Scene2() {
+Player::~Player() {
 
 }
 bool flipHorizontal = false;
 
-bool Scene2::OnCreate() {
+bool Player::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
 	// !!!!! ^ this code is in camera now ^ !!!!!
@@ -84,7 +84,7 @@ bool Scene2::OnCreate() {
 	return true;
 }
 
-void Scene2::OnDestroy() {
+void Player::OnDestroy() {
 	// Clean up the renderer
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
@@ -115,7 +115,7 @@ void Scene2::OnDestroy() {
 
 }
 
-void Scene2::HandleEvents(const SDL_Event& event)
+void Player::HandleEvents(const SDL_Event& event)
 {	
 	switch (event.type) {
 	case SDL_EVENT_KEY_DOWN:
@@ -152,7 +152,7 @@ void Scene2::HandleEvents(const SDL_Event& event)
 	}
 }
 
-void Scene2::Update(const float deltaTime) {
+void Player::Update(const float deltaTime) {
 	if (deltaTime < VERY_SMALL) return;
 
 	// Gravity
@@ -265,7 +265,7 @@ void Scene2::Update(const float deltaTime) {
 
 }
 
-void Scene2::Render() const {
+void Player::Render() const {
 	SDL_RenderClear(renderer);
 
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
