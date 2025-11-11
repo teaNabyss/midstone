@@ -40,7 +40,7 @@ void Entity::Update(float deltaTime)
 }
 
 // Handle collision with window borders
-void Entity::BorderCollision(float playerScale) {
+Vec3 Entity::BorderCollision(float playerScale) {
 	if (pos.x - playerScale / 2 < 0.0f) {
 		pos.x = playerScale / 2;
 		vel.x *= -1.0f;
@@ -58,6 +58,7 @@ void Entity::BorderCollision(float playerScale) {
 		vel.y *= -1.0f;
 	}
 
+	return pos, vel;
 }
 // Handels left and right movement using keyAdown and keyDdown boolean check
 void Entity::xInput(bool keyAdown, bool keyDdown) {

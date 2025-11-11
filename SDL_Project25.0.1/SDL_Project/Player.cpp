@@ -4,7 +4,7 @@
 #include <MMath.h>
 #include <iostream>
 #include "Entity.h"
-
+#include "Collision.h"
 
 
 Player::Player(SDL_Window* sdlWindow_) :
@@ -43,6 +43,7 @@ bool Player::OnCreate() {
 	player = new Entity();
 	player->pos = Vec3(15.0f, 1.0f, 0.0f);
 	player->mass = 2.0f;
+	player->size = Vec3(4.0f, 4.0f, 0.0f);
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	
 	playerScale = 4.0f; //used to scale image, and in collision check
@@ -51,6 +52,7 @@ bool Player::OnCreate() {
 	box = new Entity();
 	box->pos = Vec3(10.0f, 1.0f, 0.0f);
 	box->mass = 4.0f;
+	box->size = Vec3(1.75f, 1.75f, 0.0f);
 	box->SetImage("textures/crate.png", renderer);
 
 	// Creates a background to scroll it, just for now
@@ -174,66 +176,71 @@ void Player::Update(const float deltaTime) {
 	}
 
 	// Collision with borders
-	player->BorderCollision(playerScale);
-	box->BorderCollision(3.5f);
+	collision.BorderCollision(*player, player->size);	
+	collision.BorderCollision(*box, box->size);
 
-
+	if (collision.CheckCollision(*player, *box)) {
+		std::cout << "!!!!!!!!Player and crate colided!!!!!!!!" << std::endl;
+		collision.AABB(*player, *box);
+	}
 
 	// --- Player-Box collision (AABB) ---
 
-	float playerHalfSize = 1.0f; 
-	float boxHalfSizeW = 1.2f;   
-	float boxHalfSizeH = 1.0f;
+	//float playerHalfSize = 1.0f; 
+	//float boxHalfSizeW = 1.2f;   
+	//float boxHalfSizeH = 1.0f;
 
-	Vec3 playerMin = player->pos - Vec3(playerHalfSize, playerHalfSize, 0.0f);
-	Vec3 playerMax = player->pos + Vec3(playerHalfSize, playerHalfSize, 0.0f);
+	//Vec3 playerMin = player->pos - Vec3(playerHalfSize, playerHalfSize, 0.0f);
+	//Vec3 playerMax = player->pos + Vec3(playerHalfSize, playerHalfSize, 0.0f);
 
-	Vec3 boxMin = box->pos - Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
-	Vec3 boxMax = box->pos + Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
+	//Vec3 boxMin = box->pos - Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
+	//Vec3 boxMax = box->pos + Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
 
-	bool overlapX = (playerMin.x <= boxMax.x) && (playerMax.x >= boxMin.x);
-	bool overlapY = (playerMin.y <= boxMax.y) && (playerMax.y >= boxMin.y);
+	//bool overlapX = (playerMin.x <= boxMax.x) && (playerMax.x >= boxMin.x);
+	//bool overlapY = (playerMin.y <= boxMax.y) && (playerMax.y >= boxMin.y);
 
 
-	if (overlapX && overlapY)
-	{
-		float overlapLeft = playerMax.x - boxMin.x;
-		float overlapRight = boxMax.x - playerMin.x;
-		float overlapTop = boxMax.y - playerMin.y;
-		float overlapBottom = playerMax.y - boxMin.y;
+	//if (overlapX && overlapY)
+	//{
+	//	float overlapLeft = playerMax.x - boxMin.x;
+	//	float overlapRight = boxMax.x - playerMin.x;
+	//	float overlapTop = boxMax.y - playerMin.y;
+	//	float overlapBottom = playerMax.y - boxMin.y;
 
-		float minOverlapX = std::min(overlapLeft, overlapRight);
-		float minOverlapY = std::min(overlapTop, overlapBottom);
+	//	float minOverlapX = std::min(overlapLeft, overlapRight);
+	//	float minOverlapY = std::min(overlapTop, overlapBottom);
 
-		float correctionBlend = 0.2f;
+	//	float correctionBlend = 0.2f;
 
-		if (minOverlapX < minOverlapY)
-		{
-			float targetX = player->pos.x;
-			if (overlapLeft < overlapRight)
-				targetX -= minOverlapX;
-			else
-				targetX += minOverlapX;
+	//	if (minOverlapX < minOverlapY)
+	//	{
+	//		float targetX = player->pos.x;
+	//		if (overlapLeft < overlapRight)
+	//			targetX -= minOverlapX;
+	//		else
+	//			targetX += minOverlapX;
 
-			// blend towards target
-			player->pos.x = targetX;
+	//		// blend towards target
+	//		player->pos.x = targetX;
 
-			player->vel.x = 0.0f;
-		}
-		else
-		{
-			float targetY = player->pos.y;
-			if (overlapBottom < overlapTop)
-			{
-				targetY = boxMax.y + playerScale;
-				player->OnGround = true;
-			}
-			else
-			{
-				targetY = boxMin.y - playerScale;
-			}
-		}
-	}
+	//		player->vel.x = 0.0f;
+	//	}
+	//	else
+	//	{
+	//		float targetY = player->pos.y;
+	//		if (overlapBottom < overlapTop)
+	//		{
+	//			targetY = boxMax.y + playerScale;
+	//			player->OnGround = true;
+	//		}
+	//		else
+	//		{
+	//			targetY = boxMin.y - playerScale;
+	//		}
+	//	}
+	//}
+
+
 
 	//Camera follows player here
 	camera->Follow(player->pos);

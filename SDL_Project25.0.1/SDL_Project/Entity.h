@@ -18,6 +18,7 @@ public:
 	Vec3 pos;
 	Vec3 vel;
 	Vec3 acc;
+	Vec3 size;
 	float mass;
 	float speed = 15.0f;
 	float g = 9.8f;
@@ -35,7 +36,7 @@ public:
 	//void MoveLeft(float deltaTime);
 	//void MoveRight(float deltaTime);
 	void MoveUP(float deltaTime);
-	void BorderCollision(float playerScale);
+	Vec3 BorderCollision(float playerScale);
 	void xInput(bool keyAdown, bool keyDdown);
 
 

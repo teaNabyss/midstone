@@ -7,7 +7,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Camera.h"
-
+#include "Collision.h"
 #include <SDL3/SDL_mixer.h>
 
 using namespace MATH;
@@ -22,7 +22,6 @@ private:
 	Entity* box;
 	Entity* background;
 	Camera* camera;
-
 	bool running = 0;
 	bool keyAdown = false;
 	bool keyDdown = false;
@@ -32,6 +31,7 @@ private:
 	float playerSpeed = 15.0f;
 	float jumpHeight = 3.0f;
 
+	Collision collision;
 
 
 public:
