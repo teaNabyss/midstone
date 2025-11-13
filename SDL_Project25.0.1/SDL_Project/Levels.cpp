@@ -34,6 +34,7 @@ bool Levels::OnCreate() {
 
 	background = new Wall();
 	background->pos = Vec3(0.0f, 15.0f, 0.0f);
+	background->height = h;
 	background->SetImage("textures/205028.png", renderer);
 	std::cout << "Backround created" << std::endl;
 

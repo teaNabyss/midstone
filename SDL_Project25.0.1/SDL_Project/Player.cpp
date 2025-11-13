@@ -41,24 +41,23 @@ bool Player::OnCreate() {
 
 	// Creates a player that will be rendered on the screen
 	player = new Entity();
-	player->pos = Vec3(15.0f, 1.0f, 0.0f);
+	player->pos = Vec3(17.0f, 0.0f, 0.0f);
 	player->mass = 2.0f;
-	player->size = Vec3(4.0f, 4.0f, 0.0f);
+	player->size = Vec3(3.0f, 4.0f, 0.0f);
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	
 	playerScale = 4.0f; //used to scale image, and in collision check
 	
 	// Creates a box for collision code
 	box = new Entity();
-	box->pos = Vec3(10.0f, 1.0f, 0.0f);
-	box->mass = 4.0f;
-	box->size = Vec3(1.75f, 1.75f, 0.0f);
+	box->pos = Vec3(10.0f, 0.0f, 0.0f);
+	box->size = Vec3(2.0f, 2.0f, 0.0f);
 	box->SetImage("textures/crate.png", renderer);
 
 	// Creates a background to scroll it, just for now
 	background = new Entity();
-	background->pos = Vec3(0.0f, 15.0f, 0.0f);
-	background->SetImage("textures/205028.png", renderer);
+	background->pos = Vec3(0.0f, 15.1f, 0.0f);
+	background->SetImage("textures/background.png", renderer);
 	std::cout << "Backround created" << std::endl;
 
 	// "camera"
@@ -166,8 +165,8 @@ void Player::Update(const float deltaTime) {
 	player->Update(deltaTime);
 
 	// Ground collision check to prevent jump in the air
-	if (player->pos.y - playerScale / 2 <= 0.0f) {
-		player->pos.y = playerScale / 2;  // go back on the ground
+	if (player->pos.y - player->size.y <= 0.0f) {
+		player->pos.y = 0.0f;  // go back on the ground
 		player->vel.y = 0.0f;
 		player->OnGround = true;
 	}
@@ -176,25 +175,25 @@ void Player::Update(const float deltaTime) {
 	}
 
 	// Collision with borders
-	collision.BorderCollision(*player, player->size);	
-	collision.BorderCollision(*box, box->size);
+	collision.BorderCollision(*player);	
+	collision.BorderCollision(*box);
 
 	if (collision.CheckCollision(*player, *box)) {
-		std::cout << "!!!!!!!!Player and crate colided!!!!!!!!" << std::endl;
-		collision.AABB(*player, *box);
+		std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
+		//collision.AABB(*player, *box);
 	}
 
 	// --- Player-Box collision (AABB) ---
 
 	//float playerHalfSize = 1.0f; 
-	//float boxHalfSizeW = 1.2f;   
+	//float boxHalfSizeW = 1.0f;   
 	//float boxHalfSizeH = 1.0f;
 
 	//Vec3 playerMin = player->pos - Vec3(playerHalfSize, playerHalfSize, 0.0f);
 	//Vec3 playerMax = player->pos + Vec3(playerHalfSize, playerHalfSize, 0.0f);
 
 	//Vec3 boxMin = box->pos - Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
-	//Vec3 boxMax = box->pos + Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
+	//Vec3 boxMax = box->pos + Vec3(boxHalfSizeW - 0.5f, boxHalfSizeH, 0.0f);
 
 	//bool overlapX = (playerMin.x <= boxMax.x) && (playerMax.x >= boxMin.x);
 	//bool overlapY = (playerMin.y <= boxMax.y) && (playerMax.y >= boxMin.y);
@@ -256,8 +255,8 @@ void Player::Render() const {
 	SDL_FRect square;
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
-	square.w = background->GetSurface()->w * 4.0f;
-	square.h = background->GetSurface()->h * 4.4f;
+	square.w = background->GetSurface()->w * 1.5f;
+	square.h = background->GetSurface()->h * 1.5f;
 	SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	//Vec3 relativePos = camera->WorldToScreen(player->pos);
@@ -265,22 +264,21 @@ void Player::Render() const {
 	// Set up sprite's position and size
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
-	square.w = player->GetSurface()->w / playerScale;
-	square.h = player->GetSurface()->h / playerScale;
+	square.w = player->size.x * camera->GetProjectionMatrix()[0];
+	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w;
-	square.y -= square.h * 0.25f;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, 
-		(flipHorizontal) ?SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	square.y -= square.h;
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	//crate
 	screenCoords = camera->GetProjectionMatrix() * box->pos;
 	// Set up sprite's position and size
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
-	square.w = player->GetSurface()->w / 3.5f;
-	square.h = player->GetSurface()->h / 4.5f;
+	square.w = box->size.x * camera->GetProjectionMatrix()[0];
+	square.h = box->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w;
-	square.y -= square.h * 0.25f;
+	square.y -= square.h;
 	SDL_RenderTextureRotated(renderer, box->GetTexture(), nullptr, &square, box->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	// Update the screen
