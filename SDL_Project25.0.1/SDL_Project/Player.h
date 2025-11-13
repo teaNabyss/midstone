@@ -27,9 +27,8 @@ private:
 	bool keyDdown = false;
 	bool SpaceDown = false;
 
-	float playerScale; // a scale to make the texture smaller or larger
 	float playerSpeed = 15.0f;
-	float jumpHeight = 3.0f;
+	float jumpHeight = 2.0f;
 
 	Collision collision;
 

@@ -9,6 +9,7 @@ void Collision::drawAwallBox(Wall& solid) {
 
 }
 
+//Entity& obj is player
 void Collision::BorderCollision(Entity& obj) {
 
     if (obj.pos.x - obj.size.x < 0.0f) {
@@ -18,14 +19,14 @@ void Collision::BorderCollision(Entity& obj) {
         obj.pos.x = 30.0f;
     }
 
-    if (obj.pos.y - obj.size.x < 0.0f) {
-        obj.pos.y = obj.size.x;
+    if (obj.pos.y - obj.size.y < 0.0f) {
+        obj.pos.y = obj.size.y;
     }
     else if (obj.pos.y > 15.0f) {
         obj.pos.y = 15.0f;
     }
 }
-
+// obj1 is a player and obj2 is a platform
 bool Collision::CheckCollision(Entity& obj1, Entity& obj2) {
 
     if (obj1.pos.x > obj2.pos.x + obj2.size.x ||

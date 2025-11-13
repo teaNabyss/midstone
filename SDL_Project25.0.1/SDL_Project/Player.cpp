@@ -43,11 +43,9 @@ bool Player::OnCreate() {
 	player = new Entity();
 	player->pos = Vec3(17.0f, 0.0f, 0.0f);
 	player->mass = 2.0f;
-	player->size = Vec3(3.0f, 4.0f, 0.0f);
+	player->size = Vec3(2.0f, 3.0f, 0.0f);
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
-	
-	playerScale = 4.0f; //used to scale image, and in collision check
-	
+		
 	// Creates a box for collision code
 	box = new Entity();
 	box->pos = Vec3(10.0f, 0.0f, 0.0f);
@@ -176,7 +174,7 @@ void Player::Update(const float deltaTime) {
 
 	// Collision with borders
 	collision.BorderCollision(*player);	
-	collision.BorderCollision(*box);
+	//collision.BorderCollision(*box);
 
 	if (collision.CheckCollision(*player, *box)) {
 		std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
