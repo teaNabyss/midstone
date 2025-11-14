@@ -6,6 +6,8 @@
 class Camera {
 public:
     Vec3 pos;
+    float CamWidth;
+    float CamHeight;
     int width = 1280;      
     int height = 720;  
     Matrix4 ndc;
@@ -16,9 +18,9 @@ public:
 
     Camera();
 
-    void SetView(Vec3 pos_);
+    void Set(Vec3 pos_);
 
-    void Follow(const Vec3& targetPos);
+    void Follow(const Vec3& playerPos);
 
 
     bool LoadBackground();

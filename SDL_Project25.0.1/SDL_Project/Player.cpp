@@ -41,7 +41,7 @@ bool Player::OnCreate() {
 
 	// Creates a player that will be rendered on the screen
 	player = new Entity();
-	player->pos = Vec3(17.0f, 0.0f, 0.0f);
+	player->pos = Vec3(2.0f, 0.0f, 0.0f);
 	player->mass = 2.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
@@ -54,12 +54,13 @@ bool Player::OnCreate() {
 
 	// Creates a background to scroll it, just for now
 	background = new Entity();
-	background->pos = Vec3(0.0f, 15.1f, 0.0f);
+	background->pos = Vec3(0.0f, 16.0f, 0.0f);
 	background->SetImage("textures/background.png", renderer);
 	std::cout << "Backround created" << std::endl;
 
 	// "camera"
 	camera = new Camera();
+	camera->Set(player->pos);
 
 	return true;
 }
@@ -134,19 +135,20 @@ void Player::Update(const float deltaTime) {
 	Vec3 gravAccel(0.0f, -9.8f, 0.0f);
 	Vec3 PlayerGravForce = player->mass * gravAccel;
 
+	// applies x motion on player
+	player->xInput(keyAdown, keyDdown);
+
 	// Jump
 	float g = 9.8f; //gravity
 	float jumpForce = sqrt(2.0f * g * jumpHeight); // how fast will player jump considering height and gravity
 	//const float jumpDistance = 4.0f; 
 
 	if (SpaceDown && player->OnGround) {
-		player->vel.y = jumpForce;  // pushes up/ jump itsellf
-		player->ApplyForce(PlayerGravForce); // apllies gravity
+  		player->vel.y = jumpForce;  // pushes up/ jump itsellf
 		player->OnGround = false;
 	}
+		player->ApplyForce(PlayerGravForce); // apllies gravity
 
-	// applies x motion on player
-	player->xInput(keyAdown, keyDdown);
 	
 	// moves background in opposite direction to player with half of player's speed
 	float move = (player->speed * 0.5f) * deltaTime;
@@ -163,9 +165,10 @@ void Player::Update(const float deltaTime) {
 	player->Update(deltaTime);
 
 	// Ground collision check to prevent jump in the air
-	if (player->pos.y - player->size.y <= 0.0f) {
-		player->pos.y = 0.0f;  // go back on the ground
-		player->vel.y = 0.0f;
+	
+	if (player->pos.y - player->size.y / 2 <= 0.0f) {
+		player->pos.y = player->size.y / 2;  // go back on the ground
+		//player->vel.y = 0.0f;
 		player->OnGround = true;
 	}
 	else {
@@ -174,70 +177,12 @@ void Player::Update(const float deltaTime) {
 
 	// Collision with borders
 	collision.BorderCollision(*player);	
-	//collision.BorderCollision(*box);
+	collision.BorderCollision(*box);
 
-	if (collision.CheckCollision(*player, *box)) {
-		std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
-		//collision.AABB(*player, *box);
-	}
-
-	// --- Player-Box collision (AABB) ---
-
-	//float playerHalfSize = 1.0f; 
-	//float boxHalfSizeW = 1.0f;   
-	//float boxHalfSizeH = 1.0f;
-
-	//Vec3 playerMin = player->pos - Vec3(playerHalfSize, playerHalfSize, 0.0f);
-	//Vec3 playerMax = player->pos + Vec3(playerHalfSize, playerHalfSize, 0.0f);
-
-	//Vec3 boxMin = box->pos - Vec3(boxHalfSizeW, boxHalfSizeH, 0.0f);
-	//Vec3 boxMax = box->pos + Vec3(boxHalfSizeW - 0.5f, boxHalfSizeH, 0.0f);
-
-	//bool overlapX = (playerMin.x <= boxMax.x) && (playerMax.x >= boxMin.x);
-	//bool overlapY = (playerMin.y <= boxMax.y) && (playerMax.y >= boxMin.y);
-
-
-	//if (overlapX && overlapY)
-	//{
-	//	float overlapLeft = playerMax.x - boxMin.x;
-	//	float overlapRight = boxMax.x - playerMin.x;
-	//	float overlapTop = boxMax.y - playerMin.y;
-	//	float overlapBottom = playerMax.y - boxMin.y;
-
-	//	float minOverlapX = std::min(overlapLeft, overlapRight);
-	//	float minOverlapY = std::min(overlapTop, overlapBottom);
-
-	//	float correctionBlend = 0.2f;
-
-	//	if (minOverlapX < minOverlapY)
-	//	{
-	//		float targetX = player->pos.x;
-	//		if (overlapLeft < overlapRight)
-	//			targetX -= minOverlapX;
-	//		else
-	//			targetX += minOverlapX;
-
-	//		// blend towards target
-	//		player->pos.x = targetX;
-
-	//		player->vel.x = 0.0f;
-	//	}
-	//	else
-	//	{
-	//		float targetY = player->pos.y;
-	//		if (overlapBottom < overlapTop)
-	//		{
-	//			targetY = boxMax.y + playerScale;
-	//			player->OnGround = true;
-	//		}
-	//		else
-	//		{
-	//			targetY = boxMin.y - playerScale;
-	//		}
-	//	}
+	//if (collision.CheckCollision(*player, *box)) {
+	//	std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
+	//	//collision.AABB(*player, *box);
 	//}
-
-
 
 	//Camera follows player here
 	camera->Follow(player->pos);
@@ -264,8 +209,8 @@ void Player::Render() const {
 	square.y = screenCoords.y;
 	square.w = player->size.x * camera->GetProjectionMatrix()[0];
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
-	square.x -= square.w;
-	square.y -= square.h;
+	square.x -= square.w / 2;
+	square.y -= square.h / 2;
 	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	//crate
@@ -275,8 +220,8 @@ void Player::Render() const {
 	square.y = screenCoords.y;
 	square.w = box->size.x * camera->GetProjectionMatrix()[0];
 	square.h = box->size.y * std::abs(camera->GetProjectionMatrix()[5]);
-	square.x -= square.w;
-	square.y -= square.h;
+	square.x -= square.w / 2;
+	square.y -= square.h / 2;
 	SDL_RenderTextureRotated(renderer, box->GetTexture(), nullptr, &square, box->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	// Update the screen
