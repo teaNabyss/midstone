@@ -179,10 +179,10 @@ void Player::Update(const float deltaTime) {
 	collision.BorderCollision(*player);	
 	collision.BorderCollision(*box);
 
-	//if (collision.CheckCollision(*player, *box)) {
-	//	std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
-	//	//collision.AABB(*player, *box);
-	//}
+	if (collision.CheckCollision(*player, *box)) {
+		std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
+		collision.AABB(*player, *box);
+	}
 
 	//Camera follows player here
 	camera->Follow(player->pos);
