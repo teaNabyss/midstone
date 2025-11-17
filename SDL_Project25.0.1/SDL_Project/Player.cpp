@@ -20,7 +20,6 @@ Player::Player(SDL_Window* sdlWindow_) :
 Player::~Player() {
 
 }
-bool flipHorizontal = false;
 
 bool Player::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
@@ -180,7 +179,6 @@ void Player::Update(const float deltaTime) {
 	collision.BorderCollision(*box);
 
 	if (collision.CheckCollision(*player, *box)) {
-		std::cout << "!!!!!!!!player and crate colided!!!!!!!!" << std::endl;
 		collision.AABB(*player, *box);
 	}
 
@@ -211,7 +209,8 @@ void Player::Render() const {
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr,
+		(flipHorizontal) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 
 	//crate
 	screenCoords = camera->GetProjectionMatrix() * box->pos;

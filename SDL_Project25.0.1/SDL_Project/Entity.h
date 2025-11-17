@@ -23,6 +23,7 @@ public:
 	float speed = 15.0f;
 	float g = 9.8f;
 	float facingDir = 1;
+
 	bool OnGround = true; //player is on the ground from the start
 	// Let's pretend all entities are circles
 	float radius;

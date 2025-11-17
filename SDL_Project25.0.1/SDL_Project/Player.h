@@ -26,7 +26,7 @@ private:
 	bool keyAdown = false;
 	bool keyDdown = false;
 	bool SpaceDown = false;
-
+	bool flipHorizontal = false;
 	float playerSpeed = 15.0f;
 	float jumpHeight = 2.0f;
 
