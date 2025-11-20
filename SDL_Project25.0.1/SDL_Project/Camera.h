@@ -25,7 +25,7 @@ public:
 
     bool LoadBackground();
 
-    void RenderLevel();
+    void Render();
 
 
     Matrix4 GetProjectionMatrix() const {

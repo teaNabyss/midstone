@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <Matrix.h>
-#include "Scene.h"
 #include "Wall.h"
 #include "Player.h"
 #include "Camera.h"
@@ -12,7 +11,7 @@
 #include <SDL3/SDL_mixer.h>
 
 using namespace MATH;
-class Levels : public Scene {
+class Levels {
 private:
 	SDL_Window *window;
 	float xAxis;
@@ -29,11 +28,12 @@ private:
 public:
 	Levels(SDL_Window* sdlWindow);
 	~Levels();
-	bool OnCreate() override;
-	void OnDestroy() override;
-	void HandleEvents(const SDL_Event& event) override;
-	void Update(const float time) override;
-	void Render() const override;
+	bool OnCreate();
+	void OnDestroy();
+	void HandleEvents(const SDL_Event& event);
+	void Update(const float time);
+	void SetRenderer(SDL_Renderer* renderer_);
+	void Render() const;
 };
 
 #endif

@@ -7,16 +7,22 @@
 #include "Collision.h"
 
 
+//Player::Player(SDL_Window* sdlWindow_) :
+//	window(sdlWindow_)
+//	, renderer(nullptr)
+//	, player(nullptr)
+//	, box(nullptr)
+//	, xAxis(30.0f)
+//	, yAxis(15.0f)
+//{
+//}
+
 Player::Player(SDL_Window* sdlWindow_) :
-	window(sdlWindow_)
-	, renderer(nullptr)
-	, player(nullptr)
-	, box(nullptr)
-	, xAxis(30.0f)
-	, yAxis(15.0f)
+	window(sdlWindow_),
+	player(nullptr),
+	camera(nullptr)
 {
 }
-
 Player::~Player() {
 
 }
@@ -29,13 +35,13 @@ bool Player::OnCreate() {
 	SDL_GetWindowSize(window, &w, &h); //1280 X 720
 
 	//Create screen renderer
-	renderer = SDL_CreateRenderer(window, NULL);
-	if (!renderer) {
-		std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
-		return false;
-	}
-	//Initialize renderer color (black)
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	//renderer = SDL_CreateRenderer(window, NULL);
+	//if (!renderer) {
+	//	std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
+	//	return false;
+	//}
+	////Initialize renderer color (black)
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 
 	// Creates a player that will be rendered on the screen
@@ -46,20 +52,20 @@ bool Player::OnCreate() {
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 		
 	// Creates a box for collision code
-	box = new Entity();
-	box->pos = Vec3(10.0f, 0.0f, 0.0f);
-	box->size = Vec3(2.0f, 2.0f, 0.0f);
-	box->SetImage("textures/crate.png", renderer);
+	//box = new Entity();
+	//box->pos = Vec3(10.0f, 0.0f, 0.0f);
+	//box->size = Vec3(2.0f, 2.0f, 0.0f);
+	//box->SetImage("textures/crate.png", renderer);
 
-	// Creates a background to scroll it, just for now
-	background = new Entity();
-	background->pos = Vec3(0.0f, 16.0f, 0.0f);
-	background->SetImage("textures/background.png", renderer);
-	std::cout << "Backround created" << std::endl;
+	//// Creates a background to scroll it, just for now
+	//background = new Entity();
+	//background->pos = Vec3(0.0f, 16.0f, 0.0f);
+	//background->SetImage("textures/background.png", renderer);
+	//std::cout << "Backround created" << std::endl;
 
 	// "camera"
 	camera = new Camera();
-	camera->Set(player->pos);
+//	camera->Set(player->pos);
 
 	return true;
 }
@@ -90,40 +96,71 @@ void Player::OnDestroy() {
 
 }
 
-void Player::HandleEvents(const SDL_Event& event)
-{	
-	switch (event.type) {
-	case SDL_EVENT_KEY_DOWN:
-		if (event.key.key == SDLK_A) {
-			keyAdown = true;
-			flipHorizontal = false;
-		}
-		if (event.key.key == SDLK_D) {
-			keyDdown = true;
-			flipHorizontal = true;
-		}
-		if (event.key.key == SDLK_SPACE) {
-			SpaceDown = true;
-		}
+//void Player::HandleEvents(const SDL_Event& event)
+//{	
+//	switch (event.type) {
+//	case SDL_EVENT_KEY_DOWN:
+//		if (event.key.key == SDLK_A) {
+//			keyAdown = true;
+//			flipHorizontal = false;
+//		}
+//		if (event.key.key == SDLK_D) {
+//			keyDdown = true;
+//			flipHorizontal = true;
+//		}
+//		if (event.key.key == SDLK_SPACE) {
+//			SpaceDown = true;
+//		}
+//
+//		break;
+//	case SDL_EVENT_KEY_UP:
+//		if (event.key.key == SDLK_A) {
+//			keyAdown = false;
+//
+//		}
+//		if (event.key.key == SDLK_D) {
+//			keyDdown = false;
+//
+//		}
+//		if (event.key.key == SDLK_SPACE) {
+//			SpaceDown = false;
+//		}
+//
+//		break;
+//
+//	default:
+//		break;
+//	}
+//}
 
-		break;
-	case SDL_EVENT_KEY_UP:
-		if (event.key.key == SDLK_A) {
-			keyAdown = false;
 
-		}
-		if (event.key.key == SDLK_D) {
-			keyDdown = false;
+void Player::HandleInput(const bool* keyboardState) //we need to recieve the current state of a whole keyboard
+													// and not just specific keys (too much work)
+{													// and i dont want to move booleans into update, feels messy ( •_•)
+ // Check A key
+	if (keyboardState[SDL_SCANCODE_A]) {
+		keyAdown = true;
+		flipHorizontal = false;
+	}
+	else {
+		keyAdown = false;
+	}
 
-		}
-		if (event.key.key == SDLK_SPACE) {
-			SpaceDown = false;
-		}
+	// Check D key
+	if (keyboardState[SDL_SCANCODE_D]) {
+		keyDdown = true;
+		flipHorizontal = true;
+	}
+	else {
+		keyDdown = false;
+	}
 
-		break;
-
-	default:
-		break;
+	// Check Space
+	if (keyboardState[SDL_SCANCODE_SPACE]) {
+		SpaceDown = true;
+	}
+	else {
+		SpaceDown = false;
 	}
 }
 
@@ -135,8 +172,7 @@ void Player::Update(const float deltaTime) {
 	Vec3 PlayerGravForce = player->mass * gravAccel;
 
 	// applies x motion on player
-	player->xInput(keyAdown, keyDdown);
-
+		player->xInput(keyAdown, keyDdown);
 	// Jump
 	float g = 9.8f; //gravity
 	float jumpForce = sqrt(2.0f * g * jumpHeight); // how fast will player jump considering height and gravity
@@ -152,12 +188,12 @@ void Player::Update(const float deltaTime) {
 	// moves background in opposite direction to player with half of player's speed
 	float move = (player->speed * 0.5f) * deltaTime;
 
-	if (keyAdown) {
-		background->pos.x += move;
-	}
-	else if (keyDdown) {
-		background->pos.x -= move;
-	}
+	//if (keyAdown) {
+	//	background->pos.x += move;
+	//}
+	//else if (keyDdown) {
+	//	background->pos.x -= move;
+	//}
 
 
 	// Physics update
@@ -176,32 +212,36 @@ void Player::Update(const float deltaTime) {
 
 	// Collision with borders
 	collision.BorderCollision(*player);	
-	collision.BorderCollision(*box);
+	//collision.BorderCollision(*box);
 
-	if (collision.CheckCollision(*player, *box)) {
-		collision.AABB(*player, *box);
-	}
+	//if (collision.CheckCollision(*player, *box)) {
+	//	collision.AABB(*player, *box);
+	//}
 
 	//Camera follows player here
-	camera->Follow(player->pos);
+	//camera->Follow(player->pos);
 	// still not yet
 
 }
 
+void Player::SetRenderer(SDL_Renderer* renderer_) {
+	renderer = renderer_;
+}
 void Player::Render() const {
-	SDL_RenderClear(renderer);
+//	SDL_RenderClear(renderer);
 
-	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
-	Vec3 screenCoords = camera->GetProjectionMatrix() * background->pos;
-	SDL_FRect square;
-	square.x = screenCoords.x;
-	square.y = screenCoords.y;
-	square.w = background->GetSurface()->w * 1.5f;
-	square.h = background->GetSurface()->h * 1.5f;
-	SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
+	//// Convert from world coordinates to pixel coordinates using Scott's magical matrix
+	//Vec3 screenCoords = camera->GetProjectionMatrix() * background->pos;
+	//SDL_FRect square;
+	//square.x = screenCoords.x;
+	//square.y = screenCoords.y;
+	//square.w = background->GetSurface()->w * 1.5f;
+	//square.h = background->GetSurface()->h * 1.5f;
+	//SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	//Vec3 relativePos = camera->WorldToScreen(player->pos);
-	screenCoords = camera->GetProjectionMatrix() * player->pos;
+	Vec3 screenCoords = camera->GetProjectionMatrix() * player->pos;
+	SDL_FRect square;
 	// Set up sprite's position and size
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
@@ -212,17 +252,17 @@ void Player::Render() const {
 	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr,
 		(flipHorizontal) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 
-	//crate
-	screenCoords = camera->GetProjectionMatrix() * box->pos;
-	// Set up sprite's position and size
-	square.x = screenCoords.x;
-	square.y = screenCoords.y;
-	square.w = box->size.x * camera->GetProjectionMatrix()[0];
-	square.h = box->size.y * std::abs(camera->GetProjectionMatrix()[5]);
-	square.x -= square.w / 2;
-	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, box->GetTexture(), nullptr, &square, box->angleDeg, nullptr, SDL_FLIP_NONE);
+	////crate
+	//screenCoords = camera->GetProjectionMatrix() * box->pos;
+	//// Set up sprite's position and size
+	//square.x = screenCoords.x;
+	//square.y = screenCoords.y;
+	//square.w = box->size.x * camera->GetProjectionMatrix()[0];
+	//square.h = box->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+	//square.x -= square.w / 2;
+	//square.y -= square.h / 2;
+	//SDL_RenderTextureRotated(renderer, box->GetTexture(), nullptr, &square, box->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	// Update the screen
-	SDL_RenderPresent(renderer);
+//	SDL_RenderPresent(renderer);
 }

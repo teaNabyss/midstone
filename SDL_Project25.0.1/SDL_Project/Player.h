@@ -4,14 +4,13 @@
 #include <SDL3/SDL_image.h>
 
 #include <Matrix.h>
-#include "Scene.h"
 #include "Entity.h"
 #include "Camera.h"
 #include "Collision.h"
 #include <SDL3/SDL_mixer.h>
 
 using namespace MATH;
-class Player : public Scene {
+class Player  {
 private:
 	SDL_Window *window;
 	float xAxis;
@@ -35,13 +34,17 @@ private:
 
 public:
 	Entity* player;
+	//Player(SDL_Window* sdlWindow); //old one, don't get bothered by it
 	Player(SDL_Window* sdlWindow);
 	~Player();
-	bool OnCreate() override;
-	void OnDestroy() override;
-	void HandleEvents(const SDL_Event& event) override;
-	void Update(const float time) override;
-	void Render() const override;
+	bool OnCreate();
+	void OnDestroy();
+	//void HandleEvents(const SDL_Event& event); //old handle events if stuf will go wrong >:/
+	void HandleInput(const bool* keyboardState); // better say that it's handles input of a player, 
+														//the handle events is more of a "NotYetGone" manager function
+	void Update(const float time);
+	void SetRenderer(SDL_Renderer* renderer_);
+	void Render() const;
 };
 
 #endif

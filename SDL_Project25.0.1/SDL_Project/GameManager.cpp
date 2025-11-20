@@ -1,10 +1,11 @@
-#include "GameManager.h"
+﻿#include "GameManager.h"
 #include "Window.h"
 #include "Timer.h"
 #include "Scene0.h"
 #include "Scene1.h"
 #include "Player.h"
 #include "Levels.h"
+#include "NotYetGone.h"
 #include <iostream>
 
 GameManager::GameManager() {
@@ -34,7 +35,7 @@ bool GameManager::OnCreate() {
 		return false;
 	}
 
-	currentScene = new Player(windowPtr->GetSDL_Window());
+	currentScene = new NotYetGone(windowPtr->GetSDL_Window());
 	if (currentScene == nullptr) {
 		OnDestroy();
 		return false;
@@ -62,34 +63,37 @@ void GameManager::Run() {
 		if(event.type == SDL_EVENT_QUIT){
 			isRunning = false;
 		}
-		switch (event.type) {
-		case SDL_EVENT_KEY_DOWN:
+
+		//We don't need this here now (°ʖ°)
+
+		//switch (event.type) {
+		//case SDL_EVENT_KEY_DOWN:
 		
-			if (event.key.scancode == SDL_SCANCODE_F1) {
-				GameManager::OnDestroy();
-				const int SCREEN_WIDTH = 1920;
-				const int SCREEN_HEIGHT = 1080;
-				windowPtr = new Window(SCREEN_WIDTH, SCREEN_HEIGHT);
-				windowPtr->OnCreate();
-				timer = new Timer();
-				currentScene = new Scene0(windowPtr->GetSDL_Window());
-				currentScene->OnCreate();
-			}
-			if (event.key.scancode == SDL_SCANCODE_F2) {
-				GameManager::OnDestroy();
-				const int SCREEN_WIDTH = 1920;
-				const int SCREEN_HEIGHT = 1080;
-				windowPtr = new Window(SCREEN_WIDTH, SCREEN_HEIGHT);
-				windowPtr->OnCreate();
-				timer = new Timer();
-				currentScene = new Scene1(windowPtr->GetSDL_Window());
-				currentScene->OnCreate();
-			
-			}
+			//if (event.key.scancode == SDL_SCANCODE_F1) {
+			//	GameManager::OnDestroy();
+			//	const int SCREEN_WIDTH = 1920;
+			//	const int SCREEN_HEIGHT = 1080;
+			//	windowPtr = new Window(SCREEN_WIDTH, SCREEN_HEIGHT);
+			//	windowPtr->OnCreate();
+			//	timer = new Timer();
+			//	currentScene = new Scene0(windowPtr->GetSDL_Window());
+			//	currentScene->OnCreate();
+			//}
+			//if (event.key.scancode == SDL_SCANCODE_F2) {
+			//	GameManager::OnDestroy();
+			//	const int SCREEN_WIDTH = 1920;
+			//	const int SCREEN_HEIGHT = 1080;
+			//	windowPtr = new Window(SCREEN_WIDTH, SCREEN_HEIGHT);
+			//	windowPtr->OnCreate();
+			//	timer = new Timer();
+			//	currentScene = new Scene1(windowPtr->GetSDL_Window());
+			//	currentScene->OnCreate();
+			//
+			//}
 		
-		default:
-			break;
-		}
+		//default:
+		//	break;
+		//}
 
 		/// Keeep the event loop running at a proper rate
 		SDL_Delay(timer->GetSleepTime(60)); ///60 frames per sec

@@ -26,32 +26,29 @@ bool Levels::OnCreate() {
 	// to screen/pixel space
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
-	Matrix4 ndc = MMath::viewportNDC(w, h);
-	Matrix4 ortho = MMath::orthographic(0.0f, xAxis, 0.0f, yAxis, -1.0f, 1.0f);
-	
-	camera = new Camera();
-	projectionMatrix = camera->GetProjectionMatrix();
 
+	camera = new Camera();
+
+										/////////////////////////  Backdround  ///////////////////////////
 	background = new Wall();
 	background->pos = Vec3(0.0f, 15.0f, 0.0f);
-	background->height = h;
-	background->SetImage("textures/205028.png", renderer);
+	background->size = Vec3(30.0f, 15.5f , 0.0f );
+	background->SetImage("textures/background.png", renderer);
 	std::cout << "Backround created" << std::endl;
 
-	windowBorder = new Wall();
-	windowBorder->width = w;
-	windowBorder->height = h;
-	std::cout << "Window Borders created" << std::endl;
 
+														//*******  RENDERER ******* //
+	
+	////Create screen renderer
+	//renderer = SDL_CreateRenderer(window, NULL);
+	//if (!renderer) {
+	//	std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
+	//	return false;
+	//}
+	////Initialize renderer color (black)
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-	//Create screen renderer
-	renderer = SDL_CreateRenderer(window, NULL);
-	if (!renderer) {
-		std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
-		return false;
-	}
-	//Initialize renderer color (black)
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+														//************************ //
 
 	return true;
 }
@@ -88,8 +85,12 @@ void Levels::Update(const float deltaTime) {
 
 }
 
+void Levels::SetRenderer(SDL_Renderer* renderer_) {
+	renderer = renderer_;
+}
+
 void Levels::Render() const {
-	SDL_RenderClear(renderer);
+	//SDL_RenderClear(renderer);
 
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
 	Vec3 screenCoords;
@@ -100,19 +101,12 @@ void Levels::Render() const {
 	screenCoords = projectionMatrix * background->pos;
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
-	square.w = background->GetSurface()->w * 4.0f;
-	square.h = background->GetSurface()->h * 4.4f;
+	square.w = background->size.x * camera->GetProjectionMatrix()[0];
+	square.h = background->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	// Display object on the screen
 	SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
 
-	////windowBorder
-	//screenCoords = projectionMatrix * windowBorder->pos;
-	//square.x = screenCoords.x;
-	//square.y = screenCoords.y;
-	//square.w = windowBorder->GetSurface()->w;
-	//square.h = windowBorder->GetSurface()->h;
-	//SDL_RenderTextureRotated(renderer, windowBorder->GetTexture(), nullptr, &square, windowBorder->angleDeg, nullptr, SDL_FLIP_NONE);
 
-	// Update the screen
-	SDL_RenderPresent(renderer);
+	//// Update the screen
+	//SDL_RenderPresent(renderer);
 }

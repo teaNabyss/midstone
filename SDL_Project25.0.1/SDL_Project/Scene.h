@@ -8,6 +8,7 @@ public:
 	virtual void Update(const float time) = 0;
 	virtual void Render() const = 0;
 	virtual void HandleEvents(const SDL_Event &event) = 0;
+
 };
 
 #endif

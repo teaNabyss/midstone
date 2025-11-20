@@ -16,9 +16,8 @@ private:
 
 public:
 	float angleDeg;
-	float width;
-	float height;
 	Vec3 pos;
+	Vec3 size; 
 
 	float facingDir = 1;
 	float radius;
