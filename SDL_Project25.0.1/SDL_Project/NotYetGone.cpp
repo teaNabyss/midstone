@@ -37,10 +37,11 @@ bool NotYetGone::OnCreate() {
 		return false;
 	}
 
-	background = new Levels(window);
-	background->SetRenderer(renderer);
-	if (!background->OnCreate()) {
-		std::cerr << "Failed to create Levels background ＼(｀0´)／ " << std::endl;
+	//										 LEVEL
+	level = new Levels(window);
+	level->SetRenderer(renderer);
+	if (!level->OnCreate()) {
+		std::cerr << "Failed to create Levels Level ＼(｀0´)／ " << std::endl;
 		return false;
 	}
 
@@ -82,6 +83,11 @@ void NotYetGone::OnDestroy() {
 	// Clean up player
 	delete courier;
 	courier = nullptr;
+
+	// Clean up level
+	delete level;
+	level = nullptr;
+
 }
 
 void NotYetGone::HandleEvents(const SDL_Event& event) {
@@ -94,7 +100,7 @@ void NotYetGone::HandleEvents(const SDL_Event& event) {
 
 void NotYetGone::Update(const float deltaTime) {
 	
-	/// make oer couries moove (◑‿◐)
+	/// make oer courier moove (◑‿◐)
 	if (courier) {
 		courier->Update(deltaTime);
 		courier->HandleInput(keyboardState);
@@ -106,14 +112,14 @@ void NotYetGone::Update(const float deltaTime) {
 void NotYetGone::Render() const {
 	SDL_RenderClear(renderer);
 
-	if (background) {
-		background->Render();
-	}
+	// render Level class
+	if (level)
+	level->Render();
 
-
-	if (courier) {
+	// render Courier 
+	if (courier) 
 		courier->Render();
-	}
+	
 	// Update the screen
 	SDL_RenderPresent(renderer);
 }

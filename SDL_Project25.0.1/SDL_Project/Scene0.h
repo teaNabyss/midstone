@@ -4,8 +4,10 @@
 #include <Matrix.h>
 #include "Scene.h"
 #include "Entity.h"
-
+#include "Camera.h"
+#include "Collision.h"
 #include <SDL3/SDL_mixer.h>
+#include <vector>
 
 using namespace MATH;
 class Scene0 : public Scene {
@@ -19,6 +21,11 @@ private:
 
 	Entity* cliff;
 	Entity* flappy;
+	Entity* player;
+
+	std::vector<Entity*> Walls;
+	std::vector<Entity*> Objects;
+	std::vector<Entity*> platforms;
 
 	bool running = 0;
 

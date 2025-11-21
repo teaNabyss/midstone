@@ -96,44 +96,6 @@ void Player::OnDestroy() {
 
 }
 
-//void Player::HandleEvents(const SDL_Event& event)
-//{	
-//	switch (event.type) {
-//	case SDL_EVENT_KEY_DOWN:
-//		if (event.key.key == SDLK_A) {
-//			keyAdown = true;
-//			flipHorizontal = false;
-//		}
-//		if (event.key.key == SDLK_D) {
-//			keyDdown = true;
-//			flipHorizontal = true;
-//		}
-//		if (event.key.key == SDLK_SPACE) {
-//			SpaceDown = true;
-//		}
-//
-//		break;
-//	case SDL_EVENT_KEY_UP:
-//		if (event.key.key == SDLK_A) {
-//			keyAdown = false;
-//
-//		}
-//		if (event.key.key == SDLK_D) {
-//			keyDdown = false;
-//
-//		}
-//		if (event.key.key == SDLK_SPACE) {
-//			SpaceDown = false;
-//		}
-//
-//		break;
-//
-//	default:
-//		break;
-//	}
-//}
-
-
 void Player::HandleInput(const bool* keyboardState) //we need to recieve the current state of a whole keyboard
 													// and not just specific keys (too much work)
 {													// and i dont want to move booleans into update, feels messy ( •_•)

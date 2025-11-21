@@ -1,4 +1,4 @@
-﻿#include "Collision.h"
+﻿ #include "Collision.h"
 #include <MMath.h>
 
 Collision::Collision() {}
@@ -33,7 +33,10 @@ bool Collision::CheckCollision(Entity& obj1, Entity& obj2) {
     float obj1HalfH = obj1.size.y / 2.0f;
     float obj2HalfW = obj2.size.x / 2.0f;
     float obj2HalfH = obj2.size.y / 2.0f;
-
+    //able to shorten this, put calcultaions in below code
+    //
+    // 
+    // 
     // Calculate the edges of each hitbox (assuming x,y is center)
     float obj1Left = obj1.pos.x - obj1HalfW;
     float obj1Right = obj1.pos.x + obj1HalfW;

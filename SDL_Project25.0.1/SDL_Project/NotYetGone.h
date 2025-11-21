@@ -16,7 +16,7 @@ private:
 
 	Player* courier; //our courier made out of Player class
 
-	Levels* background; //well, it's a background ಠ_ಠ
+	Levels* level;
 
 	MIX_Mixer* mixer; //some music 
 	float master_volume = 0.1f;

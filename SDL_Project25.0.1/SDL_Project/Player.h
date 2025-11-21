@@ -13,7 +13,7 @@ using namespace MATH;
 class Player  {
 private:
 	SDL_Window *window;
-	float xAxis;
+ 	float xAxis;
 	float yAxis;
 
 	SDL_Renderer* renderer;

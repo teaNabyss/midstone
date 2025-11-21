@@ -24,6 +24,8 @@ public:
 	float g = 9.8f;
 	float facingDir = 1;
 
+	bool isStatic = false;
+
 	bool OnGround = true; //player is on the ground from the start
 	// Let's pretend all entities are circles
 	float radius;

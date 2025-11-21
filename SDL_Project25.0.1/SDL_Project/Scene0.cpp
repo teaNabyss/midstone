@@ -50,7 +50,22 @@ bool Scene0::OnCreate() {
 	flappy->pos = Vec3(0.0f, 5.0f, 0.0f);
 	flappy->SetImage("textures/flappyBird.png", renderer);
 
+	auto wall = new Entity();
+	wall->isStatic = true;
+	wall->pos.set(2.0f, 0.0f, 0.0f);
+	Walls.emplace_back(wall);
 
+	auto object = new Entity();
+	object->pos.set(0.0f, 10.0f, 0.0f);
+	Objects.emplace_back(object);
+
+	auto platform = new Entity();
+	platform->isStatic = true;
+	platform->pos.set(2.0f, 0.0f, 0.0f);
+	platforms.emplace_back(platform);
+
+	player = new Entity();
+	player->SetImage("textures/PurpleMailSprite.png", renderer);
 
 
 	SDL_Init(SDL_INIT_AUDIO);
@@ -155,7 +170,6 @@ void Scene0::Render() const {
 	square.w = flappy->GetSurface()->w * flappyScale; // we will scale the bird 
 	square.h = flappy->GetSurface()->h * flappyScale;
 	SDL_RenderTextureRotated(renderer, flappy->GetTexture(), nullptr, &square, flappy->angleDeg, nullptr, SDL_FLIP_NONE);
-
 	// Update the screen
 	SDL_RenderPresent(renderer);
 }

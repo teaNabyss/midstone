@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
+#include "Wall.h"
 #include <MMath.h>
 
 class Camera {
@@ -17,15 +18,19 @@ public:
     SDL_Renderer* renderer;
 
     Camera();
+    ~Camera();
+
+    bool OnCreate();  
 
     void Set(Vec3 pos_);
 
     void Follow(const Vec3& playerPos);
 
-
     bool LoadBackground();
 
-    void Render();
+    void SetRenderer(SDL_Renderer* renderer_);
+
+    void Render(Wall& solid);
 
 
     Matrix4 GetProjectionMatrix() const {
