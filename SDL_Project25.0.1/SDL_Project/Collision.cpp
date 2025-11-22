@@ -109,6 +109,8 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
     else if (overlapX > overlapY){
         //If obj1 is static, obj2 is moved
         if (obj1.isStatic) {
+            //Halts obj2's velocity and acceleration
+            obj2.vel.y = obj2.acc.y = 0.0f;
             //obj2 is below obj1
             if (deltaY > 0) {
                 obj2.pos.y += overlapY;
@@ -121,6 +123,8 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
         }
         //If obj2 is static, obj1 is moved
         else if (obj2.isStatic) {
+            //Halts obj1's velocity and acceleration
+            obj1.vel.y = obj1.acc.y = 0.0f;
             //obj1 is above obj2
             if (deltaY > 0) {
                 obj1.pos.y -= overlapY;
@@ -138,5 +142,9 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
             // - If player is below box, player is crushed(?)
             // - If box is above box, above box stands on below box as though it is static and below box remains stationary
         }
+    }
+    //If horizontal and vertical overlap are identical, resolves corner collision
+    else {
+        //TODO: Implement corner collision resolution
     }
 }
