@@ -19,17 +19,12 @@ private:
 	Matrix4 projectionMatrix;
 	SDL_Renderer* renderer;
 
-	Entity* cliff;
-	Entity* flappy;
 	Entity* player;
+	Collision collision;
 
 	std::vector<Entity*> Walls;
 	std::vector<Entity*> Objects;
 	std::vector<Entity*> platforms;
-
-	bool running = 0;
-
-	float flappyScale; // a scale to make the texture smaller or larger
 	
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
