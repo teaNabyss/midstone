@@ -14,7 +14,7 @@ public:
     Matrix4 ndc;
     Matrix4 ortho;
     Matrix4 projectionMatrix;
-
+    Matrix4 view;
     SDL_Renderer* renderer;
 
     Camera();
@@ -26,12 +26,7 @@ public:
 
     void Follow(const Vec3& playerPos);
 
-    bool LoadBackground();
-
-    void SetRenderer(SDL_Renderer* renderer_);
-
-    void Render(Wall& solid);
-
+    void WorldScroll( Vec3& objects);
 
     Matrix4 GetProjectionMatrix() const {
         return projectionMatrix;

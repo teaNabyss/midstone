@@ -38,7 +38,6 @@ bool Levels::OnCreate() {
 
 														// ************************ //
 	camera = new Camera();
-	camera->SetRenderer(renderer);
 
 	return true;
 }

@@ -22,6 +22,7 @@ private:
 	Entity* cliff;
 	Entity* flappy;
 	Entity* player;
+	Entity* background;
 
 	std::vector<Entity*> Walls;
 	std::vector<Entity*> Objects;
@@ -29,8 +30,8 @@ private:
 
 	bool running = 0;
 
-	float flappyScale; // a scale to make the texture smaller or larger
-	
+	Camera* camera;
+
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
 public:
