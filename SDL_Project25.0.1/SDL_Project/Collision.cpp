@@ -28,16 +28,7 @@ void Collision::BorderCollision(Entity& obj) {
 }
 // obj1 is a player and obj2 is a platform
 bool Collision::CheckCollision(Entity& obj1, Entity& obj2) {
-    // Calculate half-widths and half-heights
-    float obj1HalfW = obj1.size.x / 2.0f;
-    float obj1HalfH = obj1.size.y / 2.0f;
-    float obj2HalfW = obj2.size.x / 2.0f;
-    float obj2HalfH = obj2.size.y / 2.0f;
-    //able to shorten this, put calcultaions in below code
-    //
-    // 
-    // 
-    // Calculate the edges of each hitbox (assuming x,y is center)
+    //Calculate the edges of each hitbox (assuming x,y is center)
     float obj1Left = obj1.pos.x - (obj1.size.x / 2.0f);
     //AD: Previous code used "obj1Right = obj.pos.x + (obj1.size.x / 2.0f)". My thinking is that using obj1Left as a base saves a miniscule but not zero amount of calculation time
     float obj1Right = obj1Left + obj1.size.x;
