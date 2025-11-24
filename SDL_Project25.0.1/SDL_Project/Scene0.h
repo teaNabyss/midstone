@@ -19,16 +19,14 @@ private:
 	Matrix4 projectionMatrix;
 	SDL_Renderer* renderer;
 
-	Entity* cliff;
-	Entity* flappy;
 	Entity* player;
+	Collision collision;
 	Entity* background;
 
 	std::vector<Entity*> Walls;
 	std::vector<Entity*> Objects;
 	std::vector<Entity*> platforms;
 
-	bool running = 0;
 
 	Camera* camera;
 
