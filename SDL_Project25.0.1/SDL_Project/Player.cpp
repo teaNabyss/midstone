@@ -99,7 +99,7 @@ void Player::OnDestroy() {
 void Player::HandleInput(const bool* keyboardState) //we need to recieve the current state of a whole keyboard
 													// and not just specific keys (too much work)
 {													// and i dont want to move booleans into update, feels messy ( •_•)
- // Check A key
+	// Check A key
 	if (keyboardState[SDL_SCANCODE_A]) {
 		keyAdown = true;
 		flipHorizontal = false;

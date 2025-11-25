@@ -23,7 +23,13 @@ private:
 	Collision collision;
 	Entity* background;
 
-	std::vector<Entity*> Walls;
+	//movement booleans
+	bool movingLeft;
+	bool movingRight;
+	bool jumpInput;
+	bool isJumping;
+	bool isOnGround;
+
 	std::vector<Entity*> Objects;
 	std::vector<Entity*> platforms;
 

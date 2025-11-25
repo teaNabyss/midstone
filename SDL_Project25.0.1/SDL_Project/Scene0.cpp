@@ -42,10 +42,13 @@ bool Scene0::OnCreate() {
 	background->pos = Vec3(0.0f, 16.0f, 0.0f);
 	background->SetImage("textures/background.png", renderer);
 	std::cout << "Backround created" << std::endl;
-	//auto wall = new Entity();
-	//wall->isStatic = true;
-	//wall->pos.set(2.0f, 0.0f, 0.0f);
-	//Walls.emplace_back(wall);
+
+	movingLeft = false;
+	movingRight = false;
+	jumpInput = false;
+	isJumping = false;
+	isOnGround = false;
+
 
 	//auto object = new Entity();
 	//object->pos.set(0.0f, 10.0f, 0.0f);
@@ -129,15 +132,44 @@ void Scene0::OnDestroy() {
 void Scene0::HandleEvents(const SDL_Event& event)
 {
 	switch (event.type) {
-
-	default:
-		break;
+		case SDL_EVENT_KEY_DOWN:
+			if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
+				movingLeft = true;
+			}
+			if (event.key.scancode == SDL_SCANCODE_D || event.key.scancode == SDL_SCANCODE_RIGHT) {
+				movingRight = true;
+			}
+			if (event.key.scancode == SDL_SCANCODE_SPACE) {
+				jumpInput = true;
+			}
+			break;
+		case SDL_EVENT_KEY_UP:
+			if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
+				movingLeft = false;
+			}
+			if (event.key.scancode == SDL_SCANCODE_D || event.key.scancode == SDL_SCANCODE_RIGHT) {
+				movingRight = false;
+			}
+			if (event.key.scancode == SDL_SCANCODE_SPACE) {
+				jumpInput = false;
+			}
+			break;
 	}
 }
 
 void Scene0::Update(const float deltaTime) {
+	//Movement
+	if (movingLeft && !movingRight) {
+		player->vel.x = -50.0f;
+	}
+	else if (movingRight && !movingLeft) {
+		player->vel.x = 50.0f;
+	}
+	else {
+		player->vel.x = 0.0f;
+	}
 	//Applies gravity to the player
-	player->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
+	player->ApplyForce(Vec3(0.0f, 9.8f, 0.0f));
 	player->Update(deltaTime);
 	//Checks for collision between the player and platforms
 	//TODO: Implement spacial partisioning
