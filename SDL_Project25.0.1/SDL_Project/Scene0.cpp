@@ -65,7 +65,7 @@ bool Scene0::OnCreate() {
 	player->mass = 2.0f;
 	//TODO: AD: Should we automate size setting via image surface size?
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
-	player->pos = Vec3(3.0f, 8.0f, 0.0f);
+	player->pos = Vec3(4.0f, 8.0f, 0.0f);
 	player->isStatic = false;
 
 	//Creates a box entity and places it below the player
@@ -73,7 +73,7 @@ bool Scene0::OnCreate() {
 	box->SetImage("textures/Crate.png", renderer);
 	box->mass = 2.0f;
 	box->size = Vec3(2.0f, 2.0f, 0.0f);
-	box->pos = Vec3(4.0f, 2.0f, 0.0f);
+	box->pos = Vec3(4.0f, 1.0f, 0.0f);
 	//AD: For the sake of testing, the box is currently static
 	box->isStatic = true;
 	platforms.emplace_back(box);
@@ -192,19 +192,25 @@ void Scene0::Render() const {
 
 	//TODO: Renders for both player and platforms are inaccurate and purely for rudimentary testing purposes only. Needs proper implementation
 	//Renders player
-	screenCoords = projectionMatrix * player->pos;
+	screenCoords = camera->GetProjectionMatrix() * player->pos;
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
-	square.w = player->GetSurface()->w / 2.0f;
-	square.h = player->GetSurface()->h / 2.0f;
+	square.w = player->size.x * camera->GetProjectionMatrix()[0];
+	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+	square.x -= square.w / 2;
+	square.y -= square.h / 2;
 	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+
+
 	//Renders platforms
 	for (int i = 0; i < platforms.size(); i += 1) {
-		screenCoords = projectionMatrix * platforms[i]->pos;
+		screenCoords = camera->GetProjectionMatrix() * platforms[i]->pos;
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
-		square.w = platforms[i]->GetSurface()->w * platforms[i]->size.x;
-		square.h = platforms[i]->GetSurface()->h * platforms[i]->size.y;
+		square.w = platforms[i]->size.x * camera->GetProjectionMatrix()[0];
+		square.h = platforms[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.x -= square.w / 2;
+		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
 	
