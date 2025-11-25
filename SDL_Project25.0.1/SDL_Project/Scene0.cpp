@@ -6,8 +6,6 @@
 #include "Entity.h"
 #include "Camera.h"
 
-
-
 Scene0::Scene0(SDL_Window* sdlWindow_) :
 	window(sdlWindow_)
 	, renderer(nullptr)
@@ -36,62 +34,72 @@ bool Scene0::OnCreate() {
 	//Initialize renderer color (black)
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	
-	// Create the objects that will be rendered on the screen
-
-	background = new Entity();
-	background->pos = Vec3(0.0f, 16.0f, 0.0f);
-	background->SetImage("textures/background.png", renderer);
-	std::cout << "Backround created" << std::endl;
-
 	movingLeft = false;
 	movingRight = false;
 	jumpInput = false;
 	isJumping = false;
 	isOnGround = false;
 
-
-	//auto object = new Entity();
-	//object->pos.set(0.0f, 10.0f, 0.0f);
-	//Objects.emplace_back(object);
-
-	//auto platform = new Entity();
-	//platform->isStatic = true;
-	//platform->pos.set(2.0f, 0.0f, 0.0f);
-	//platforms.emplace_back(platform);
-
+	// Create the objects that will be rendered on the screen
+	background = new Entity();
+	background->pos = Vec3(0.0f, 16.0f, 0.0f);
+	background->SetImage("textures/background.png", renderer);
+	std::cout << "Backround created" << std::endl;
 	//Create a player entity
 	player = new Entity();
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	player->mass = 2.0f;
-	//TODO: AD: Should we automate size setting via image surface size?
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
 	player->pos = Vec3(4.0f, 8.0f, 0.0f);
 	player->isStatic = false;
-
 	//Creates a box entity and places it below the player
-	auto box = new Entity();
-	box->SetImage("textures/Crate.png", renderer);
-	box->mass = 2.0f;
-	box->size = Vec3(2.0f, 2.0f, 0.0f);
-	box->pos = Vec3(4.0f, 1.0f, 0.0f);
+	auto box1 = new Entity();
+	box1->SetImage("textures/Crate.png", renderer);
+	box1->mass = 2.0f;
+	box1->size = Vec3(2.0f, 2.0f, 0.0f);
+	box1->pos = Vec3(4.0f, 2.0f, 0.0f);
 	//AD: For the sake of testing, the box is currently static
-	box->isStatic = true;
-	platforms.emplace_back(box);
-
-
-
+	box1->isStatic = true;
+	platforms.emplace_back(box1);
+	//Another box, now on a floating platform
+	auto box2 = new Entity();
+	box2->SetImage("textures/Crate.png", renderer);
+	box2->mass = 2.0f;
+	box2->size = Vec3(2.0f, 2.0f, 0.0f);
+	box2->pos = Vec3(20.0f, 7.0f, 0.0f);
+	box2->isStatic = false;
+	objects.emplace_back(box2);
+	//Test level platforms
+	auto plat1 = new Entity();
+	plat1->SetImage("textures/Crate.png", renderer);
+	plat1->mass = 100.0f;
+	plat1->size = Vec3(30.0f, 1.0f, 0.0f);
+	plat1->pos = Vec3(15.0f, 0.5f, 0.0f);
+	plat1->isStatic = true;
+	platforms.emplace_back(plat1);
+	auto plat2 = new Entity();
+	plat2->SetImage("textures/Crate.png", renderer);
+	plat2->mass = 100.0f;
+	plat2->size = Vec3(5.0f, 1.0f, 0.0f);
+	plat2->pos = Vec3(20.0f, 5.0f, 0.0f);
+	plat2->isStatic = true;
+	platforms.emplace_back(plat2);
+	auto plat3 = new Entity();
+	plat3->SetImage("textures/Crate.png", renderer);
+	plat3->mass = 100.0f;
+	plat3->size = Vec3(1.0f, 6.0f, 0.0f);
+	plat3->pos = Vec3(30.0f, 4.0f, 0.0f);
+	plat3->isStatic = true;
+	platforms.emplace_back(plat3);
 
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
-
 	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
-
 	if (!mixer)
 	{
 		std::cout << "Failed to create mixer: %s\n", SDL_GetError();
 		return 0;
 	}
-
 	//// Load and play music
 	MIX_Audio* Music = MIX_LoadAudio(mixer, "Audio/CrabRave.wav", true);
 	MIX_SetMasterGain(mixer, master_volume);
@@ -109,18 +117,21 @@ void Scene0::OnDestroy() {
 		SDL_DestroyRenderer(renderer);
 		renderer = nullptr;
 	}
-
 	//// Turn off audio
 	if (mixer)
 	{
 		MIX_DestroyMixer(mixer);
 		MIX_Quit();
 	}
-
 	// Delete the objects created on the heap
 	// and set to the null pointer just to be safe
 	delete player;
 	player = nullptr;
+
+	for (int i = 0; i < objects.size(); i += 1) {
+		delete objects[i];
+		objects[i] = nullptr;
+	}
 
 	for (int i = 0; i < platforms.size(); i += 1) {
 		delete platforms[i];
@@ -129,8 +140,7 @@ void Scene0::OnDestroy() {
 	
 }
 
-void Scene0::HandleEvents(const SDL_Event& event)
-{
+void Scene0::HandleEvents(const SDL_Event& event) {
 	switch (event.type) {
 		case SDL_EVENT_KEY_DOWN:
 			if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
@@ -171,26 +181,45 @@ void Scene0::Update(const float deltaTime) {
 	//Applies gravity to the player
 	player->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
 	player->Update(deltaTime);
-	//Checks for collision between the player and platforms
 	//TODO: Implement spacial partisioning
+	//Applies gravity to the objects
+	//AD: I'm not combining this with the collision loop to facilitate using an object's y velocity to tell whether or not 
+	for (int i = 0; i < objects.size(); i += 1) {
+		objects[i]->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
+		objects[i]->Update(deltaTime);
+	}
+	//Checks for collision between the player/objects and platforms
 	for (int i = 0; i < platforms.size(); i += 1) {
 		if (collision.CheckCollision(*player, *platforms[i])) {
 			collision.ResolveCollision(*player, *platforms[i]);
 		}
+		for (int j = 0; j < objects.size(); j += 1) {
+			if (collision.CheckCollision(*objects[j], *platforms[i])) {
+				collision.ResolveCollision(*objects[j], *platforms[i]);
+			}
+		}
 	}
-
+	//Checks for collision between the player/objects and objects
+	for (int i = 0; i < objects.size(); i += 1) {
+		if (collision.CheckCollision(*player, *objects[i])) {
+			collision.ResolveCollision(*player, *objects[i]);
+		}
+		for (int j = i + 1; j < objects.size(); j += 1) {
+			if (collision.CheckCollision(*objects[j], *platforms[i])) {
+				collision.ResolveCollision(*objects[j], *platforms[i]);
+			}
+		}
+	}
+	//Camera stuff
 	camera->Follow(player->pos);
 }
 
 void Scene0::Render() const {
 	SDL_RenderClear(renderer);
-
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
 	Vec3 screenCoords;
 	// Set up sprite's position and size
 	SDL_FRect square;
-
-	//TODO: Renders for both player and platforms are inaccurate and purely for rudimentary testing purposes only. Needs proper implementation
 	//Renders player
 	screenCoords = camera->GetProjectionMatrix() * player->pos;
 	square.x = screenCoords.x;
@@ -200,8 +229,17 @@ void Scene0::Render() const {
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
 	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
-
-
+	//Renders objects
+	for (int i = 0; i < objects.size(); i += 1) {
+		screenCoords = camera->GetProjectionMatrix() * objects[i]->pos;
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
+		square.w = objects[i]->size.x * camera->GetProjectionMatrix()[0];
+		square.h = objects[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.x -= square.w / 2;
+		square.y -= square.h / 2;
+		SDL_RenderTextureRotated(renderer, objects[i]->GetTexture(), nullptr, &square, objects[i]->angleDeg, nullptr, SDL_FLIP_NONE);
+	}
 	//Renders platforms
 	for (int i = 0; i < platforms.size(); i += 1) {
 		screenCoords = camera->GetProjectionMatrix() * platforms[i]->pos;
@@ -213,7 +251,6 @@ void Scene0::Render() const {
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
-	
 	// Update the screen
 	SDL_RenderPresent(renderer);
 }

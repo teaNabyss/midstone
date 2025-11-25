@@ -30,7 +30,9 @@ private:
 	bool isJumping;
 	bool isOnGround;
 
-	std::vector<Entity*> Objects;
+	//Non-Static objects
+	std::vector<Entity*> objects;
+	//Static platforms/level geometry
 	std::vector<Entity*> platforms;
 
 
