@@ -160,16 +160,16 @@ void Scene0::HandleEvents(const SDL_Event& event)
 void Scene0::Update(const float deltaTime) {
 	//Movement
 	if (movingLeft && !movingRight) {
-		player->vel.x = -50.0f;
+		player->vel.x = -10.0f;
 	}
 	else if (movingRight && !movingLeft) {
-		player->vel.x = 50.0f;
+		player->vel.x = 10.0f;
 	}
 	else {
 		player->vel.x = 0.0f;
 	}
 	//Applies gravity to the player
-	player->ApplyForce(Vec3(0.0f, 9.8f, 0.0f));
+	player->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
 	player->Update(deltaTime);
 	//Checks for collision between the player and platforms
 	//TODO: Implement spacial partisioning
