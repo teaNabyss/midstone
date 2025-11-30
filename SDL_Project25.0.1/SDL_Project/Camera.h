@@ -6,7 +6,6 @@
 
 class Camera {
 public:
-    Vec3 pos;
     float CamWidth;
     float CamHeight;
     int width = 1280;      
@@ -21,8 +20,6 @@ public:
     ~Camera();
 
     bool OnCreate();  
-
-    void Set(Vec3 pos_);
 
     void Follow(const Vec3& playerPos);
 

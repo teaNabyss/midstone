@@ -18,16 +18,11 @@ bool Camera::OnCreate() {
 
 }
 
-void Camera::Set(Vec3 pos_){
-    pos = pos_;
-    }
-
 void Camera::Follow(const Vec3& playerPos) {
-	pos.x = playerPos.x - (width * 0.5f);
-	pos.y = playerPos.y - (height * 0.5f);
+    CameraSquare.x = playerPos.x - (width * 0.5f);
+    CameraSquare.y = playerPos.y - (height * 0.5f);
 }
 
 void Camera::WorldScroll( Vec3& objectsPos) {
-    objectsPos.x -= pos.x * (-0.5f);
-
+    objectsPos.x -= CameraSquare.x * (-0.5f);
 }

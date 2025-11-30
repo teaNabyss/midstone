@@ -1,4 +1,4 @@
-#include "Scene0.h"
+﻿#include "Scene0.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <MMath.h>
@@ -73,7 +73,7 @@ bool Scene0::OnCreate() {
 	auto plat1 = new Entity();
 	plat1->SetImage("textures/Crate.png", renderer);
 	plat1->mass = 100.0f;
-	plat1->size = Vec3(30.0f, 1.0f, 0.0f);
+	plat1->size = Vec3(100.0f, 1.0f, 0.0f);
 	plat1->pos = Vec3(15.0f, 0.5f, 0.0f);
 	plat1->isStatic = true;
 	platforms.emplace_back(plat1);
@@ -84,13 +84,13 @@ bool Scene0::OnCreate() {
 	plat2->pos = Vec3(20.0f, 5.0f, 0.0f);
 	plat2->isStatic = true;
 	platforms.emplace_back(plat2);
-	auto plat3 = new Entity();
-	plat3->SetImage("textures/Crate.png", renderer);
-	plat3->mass = 100.0f;
-	plat3->size = Vec3(1.0f, 6.0f, 0.0f);
-	plat3->pos = Vec3(30.0f, 4.0f, 0.0f);
-	plat3->isStatic = true;
-	platforms.emplace_back(plat3);
+	//auto plat3 = new Entity();
+	//plat3->SetImage("textures/Crate.png", renderer);
+	//plat3->mass = 100.0f;
+	//plat3->size = Vec3(1.0f, 6.0f, 0.0f);
+	//plat3->pos = Vec3(30.0f, 4.0f, 0.0f);
+	//plat3->isStatic = true;
+	//platforms.emplace_back(plat3);
 
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
@@ -106,8 +106,10 @@ bool Scene0::OnCreate() {
 	MIX_PlayAudio(mixer, Music);
 	MIX_DestroyAudio(Music);
 
-	camera = new Camera();
-	
+	// ┬─┬ノ(ಠ_ಠノ)
+	camera = new Camera;
+	cameraSquare = {0,0,1280,720};
+
 	return true;
 }
 
@@ -138,6 +140,8 @@ void Scene0::OnDestroy() {
 		platforms[i] = nullptr;
 	}
 	
+	// we destroy this crappy crap (╯°□°）╯
+
 }
 
 void Scene0::HandleEvents(const SDL_Event& event) {
@@ -210,8 +214,19 @@ void Scene0::Update(const float deltaTime) {
 			}
 		}
 	}
-	//Camera stuff
-	camera->Follow(player->pos);
+	//Camera stuff ಠ_ಠ
+	float worldWidth = 1280.0f / camera->GetProjectionMatrix()[0];  // Convert pixel width to world units
+	float worldHeight = 720.0f / std::abs(camera->GetProjectionMatrix()[5]);  // Convert pixel height to world units
+
+	// Center camera on player
+	cameraSquare.x = player->pos.x - (worldWidth * 0.5f);
+	cameraSquare.y = player->pos.y - (worldHeight * 0.5f);
+
+	// Clamp camera to world bounds (adjust these limits to your actual world size)
+	if (cameraSquare.x < 0)
+		cameraSquare.x = 0;
+	if (cameraSquare.y < 0)
+		cameraSquare.y = 0;
 }
 
 void Scene0::Render() const {
@@ -228,12 +243,11 @@ void Scene0::Render() const {
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
-	//Renders objects
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);	//Renders objects
 	for (int i = 0; i < objects.size(); i += 1) {
 		screenCoords = camera->GetProjectionMatrix() * objects[i]->pos;
-		square.x = screenCoords.x;
-		square.y = screenCoords.y;
+		square.x = objects[i]->pos.x - cameraSquare.x;
+		square.y = objects[i]->pos.y - cameraSquare.y;
 		square.w = objects[i]->size.x * camera->GetProjectionMatrix()[0];
 		square.h = objects[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 		square.x -= square.w / 2;
@@ -243,8 +257,8 @@ void Scene0::Render() const {
 	//Renders platforms
 	for (int i = 0; i < platforms.size(); i += 1) {
 		screenCoords = camera->GetProjectionMatrix() * platforms[i]->pos;
-		square.x = screenCoords.x;
-		square.y = screenCoords.y;
+		square.x = platforms[i]->pos.x - cameraSquare.x;
+		square.y = platforms[i]->pos.y - cameraSquare.y;
 		square.w = platforms[i]->size.x * camera->GetProjectionMatrix()[0];
 		square.h = platforms[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 		square.x -= square.w / 2;
