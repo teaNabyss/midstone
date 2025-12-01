@@ -1,4 +1,4 @@
-#include "Scene1.h"
+#include "Scene5.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_image.h>
 #include <MMath.h>
@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "Camera.h"
 
-Scene1::Scene1(SDL_Window* sdlWindow_) :
+Scene5::Scene5(SDL_Window* sdlWindow_) :
 	window(sdlWindow_)
 	, renderer(nullptr)
 	, xAxis(30.0f)
@@ -15,11 +15,11 @@ Scene1::Scene1(SDL_Window* sdlWindow_) :
 
 }
 
-Scene1::~Scene1(){
+Scene5::~Scene5(){
 
 }
 
-bool Scene1::OnCreate() {
+bool Scene5::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
 	int w, h;
@@ -50,7 +50,7 @@ bool Scene1::OnCreate() {
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	player->mass = 2.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
-	player->pos = Vec3(7.0f, 8.0f, 0.0f);
+	player->pos = Vec3(4.0f, 8.0f, 0.0f);
 	player->isStatic = false;
 	//Creates a box entity and places it below the player
 	auto box1 = new Entity();
@@ -120,7 +120,7 @@ bool Scene1::OnCreate() {
 	return true;
 }
 
-void Scene1::OnDestroy() {
+void Scene5::OnDestroy() {
 	// Clean up the renderer
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
@@ -151,7 +151,7 @@ void Scene1::OnDestroy() {
 	
 }
 
-void Scene1::HandleEvents(const SDL_Event& event) {
+void Scene5::HandleEvents(const SDL_Event& event) {
 	switch (event.type) {
 		case SDL_EVENT_KEY_DOWN:
 			if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
@@ -178,7 +178,7 @@ void Scene1::HandleEvents(const SDL_Event& event) {
 	}
 }
 
-void Scene1::Update(const float deltaTime) {
+void Scene5::Update(const float deltaTime) {
 	//Movement
 	if (movingLeft && !movingRight) {
 		player->vel.x = -10.0f;
@@ -229,7 +229,7 @@ void Scene1::Update(const float deltaTime) {
 	}
 }
 
-void Scene1::Render() const {
+void Scene5::Render() const {
 	SDL_RenderClear(renderer);
 	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
 	Vec3 screenCoords;

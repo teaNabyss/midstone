@@ -92,6 +92,15 @@ bool Scene0::OnCreate() {
 	plat3->isStatic = true;
 	platforms.emplace_back(plat3);
 
+	// End Game Portal
+
+	portal = new Entity();
+	portal->SetImage("textures/PurplePortal.png", renderer);
+	portal->mass = 0.0f;
+	portal->size = Vec3(2.0f, 3.0f, 0.0f);
+	portal->pos = Vec3(28.0f, 5.0f, 0.0f);
+	portal->isStatic = true;
+
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
 	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
@@ -137,6 +146,8 @@ void Scene0::OnDestroy() {
 		delete platforms[i];
 		platforms[i] = nullptr;
 	}
+	delete portal;
+	portal = nullptr;
 	
 }
 
@@ -151,6 +162,9 @@ void Scene0::HandleEvents(const SDL_Event& event) {
 			}
 			if (event.key.scancode == SDL_SCANCODE_SPACE) {
 				jumpInput = true;
+			}
+			if (event.key.scancode == SDL_SCANCODE_R) {
+				playerDeath = true;
 			}
 			break;
 		case SDL_EVENT_KEY_UP:
@@ -212,6 +226,10 @@ void Scene0::Update(const float deltaTime) {
 	}
 	//Camera stuff
 	camera->Follow(player->pos);
+
+	if (portal && collision.CheckCollision(*player, *portal)) {
+		sceneComplete = true;
+	}
 }
 
 void Scene0::Render() const {
@@ -250,6 +268,17 @@ void Scene0::Render() const {
 		square.x -= square.w / 2;
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
+	}
+	if (portal) {
+		screenCoords = camera->GetProjectionMatrix() * portal->pos;
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
+		square.w = portal->size.x * camera->GetProjectionMatrix()[0];
+		square.h = portal->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.x -= square.w / 2;
+		square.y -= square.h / 2;
+
+		SDL_RenderTextureRotated(renderer, portal->GetTexture(), nullptr, &square, portal->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
 	// Update the screen
 	SDL_RenderPresent(renderer);

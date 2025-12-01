@@ -1,5 +1,5 @@
-#ifndef SCENE1_H
-#define SCENE1_H
+#ifndef SCENE4_H
+#define SCENE4_H
 #include <SDL3/SDL.h>
 #include <Matrix.h>
 #include "Scene.h"
@@ -10,7 +10,7 @@
 #include <vector>
 
 using namespace MATH;
-class Scene1 : public Scene {
+class Scene4 : public Scene {
 private:
 	SDL_Window *window;
 	float xAxis;
@@ -44,8 +44,8 @@ private:
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
 public:
-	Scene1(SDL_Window* sdlWindow);
-	~Scene1();
+	Scene4(SDL_Window* sdlWindow);
+	~Scene4();
 	bool IsComplete() const override { return sceneComplete; }
 	bool OnCreate() override;
 	void OnDestroy() override;
