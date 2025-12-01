@@ -13,16 +13,3 @@ Camera::Camera() : renderer(nullptr)
 
 Camera::~Camera() {}
 
-bool Camera::OnCreate() {
-	return true;
-
-}
-
-void Camera::Follow(const Vec3& playerPos) {
-    CameraSquare.x = playerPos.x - (width * 0.5f);
-    CameraSquare.y = playerPos.y - (height * 0.5f);
-}
-
-void Camera::WorldScroll( Vec3& objectsPos) {
-    objectsPos.x -= CameraSquare.x * (-0.5f);
-}

@@ -10,6 +10,7 @@ public:
     float CamHeight;
     int width = 1280;      
     int height = 720;  
+    Vec3 pos;
     Matrix4 ndc;
     Matrix4 ortho;
     Matrix4 projectionMatrix;
@@ -19,11 +20,10 @@ public:
     Camera();
     ~Camera();
 
-    bool OnCreate();  
 
-    void Follow(const Vec3& playerPos);
-
-    void WorldScroll( Vec3& objects);
+    void SetPosition(Vec3 pos_) {
+        pos = pos_;
+    }
 
     Matrix4 GetProjectionMatrix() const {
         return projectionMatrix;

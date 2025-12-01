@@ -108,7 +108,7 @@ bool Scene0::OnCreate() {
 
 	// ┬─┬ノ(ಠ_ಠノ)
 	camera = new Camera;
-	cameraSquare = {0,0,1280,720};
+	cameraSquare = {0,0,30,15};
 
 	return true;
 }
@@ -139,8 +139,6 @@ void Scene0::OnDestroy() {
 		delete platforms[i];
 		platforms[i] = nullptr;
 	}
-	
-	// we destroy this crappy crap (╯°□°）╯
 
 }
 
@@ -215,8 +213,8 @@ void Scene0::Update(const float deltaTime) {
 		}
 	}
 	//Camera stuff ಠ_ಠ
-	float worldWidth = 1280.0f / camera->GetProjectionMatrix()[0];  // Convert pixel width to world units
-	float worldHeight = 720.0f / std::abs(camera->GetProjectionMatrix()[5]);  // Convert pixel height to world units
+	float worldWidth = 30.0f; // / camera->GetProjectionMatrix()[0];  // Convert pixel width to world units
+	float worldHeight = 15.0f; // / std::abs(camera->GetProjectionMatrix()[5]);  // Convert pixel height to world units
 
 	// Center camera on player
 	cameraSquare.x = player->pos.x - (worldWidth * 0.5f);
@@ -231,40 +229,47 @@ void Scene0::Update(const float deltaTime) {
 
 void Scene0::Render() const {
 	SDL_RenderClear(renderer);
-	// Convert from world coordinates to pixel coordinates using Scott's magical matrix
-	Vec3 screenCoords;
-	// Set up sprite's position and size
 	SDL_FRect square;
-	//Renders player
-	screenCoords = camera->GetProjectionMatrix() * player->pos;
+
+	// Renders player
+	// Subtract camera position (world space)
+	Vec3 relativePos = player->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
+	Vec3 screenCoords = camera->GetProjectionMatrix() * relativePos;
+
+	// Apply projection matrix to convert to screen space
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
 	square.w = player->size.x * camera->GetProjectionMatrix()[0];
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);	//Renders objects
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+
+	// Renders objects
 	for (int i = 0; i < objects.size(); i += 1) {
-		screenCoords = camera->GetProjectionMatrix() * objects[i]->pos;
-		square.x = objects[i]->pos.x - cameraSquare.x;
-		square.y = objects[i]->pos.y - cameraSquare.y;
+		relativePos = objects[i]->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
+		screenCoords = camera->GetProjectionMatrix() * relativePos;
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
 		square.w = objects[i]->size.x * camera->GetProjectionMatrix()[0];
 		square.h = objects[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 		square.x -= square.w / 2;
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, objects[i]->GetTexture(), nullptr, &square, objects[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
-	//Renders platforms
+
+	// Renders platforms (same pattern)
 	for (int i = 0; i < platforms.size(); i += 1) {
-		screenCoords = camera->GetProjectionMatrix() * platforms[i]->pos;
-		square.x = platforms[i]->pos.x - cameraSquare.x;
-		square.y = platforms[i]->pos.y - cameraSquare.y;
+		relativePos = platforms[i]->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
+		screenCoords = camera->GetProjectionMatrix() * relativePos;
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
 		square.w = platforms[i]->size.x * camera->GetProjectionMatrix()[0];
 		square.h = platforms[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 		square.x -= square.w / 2;
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
-	// Update the screen
+
 	SDL_RenderPresent(renderer);
 }
