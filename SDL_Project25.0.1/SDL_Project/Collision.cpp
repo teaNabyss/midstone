@@ -47,9 +47,9 @@ bool Collision::CheckCollision(Entity& obj1, Entity& obj2) {
         obj1Top > obj2Bottom);    // obj1 is below obj2
 }
 
-void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
+bool Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
     //Safety measure to ensure the function is not called erronously
-    if (!CheckCollision(obj1, obj2)) return;
+    if (!CheckCollision(obj1, obj2)) return true;
     //Calculates the distance between object centers
     float deltaX = obj2.pos.x - obj1.pos.x;
     float deltaY = obj2.pos.y - obj1.pos.y;
@@ -103,13 +103,14 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
             //Halts obj2's velocity and acceleration
             obj2.vel.y = obj2.acc.y = 0.0f;
             //obj2 is below obj1
-            if (deltaY > 0) {
-                obj2.pos.y += overlapY;
+            if (deltaY < 0) {
+                obj2.pos.y -= overlapY;
             }
             //obj2 is above obj1
             else {
-                obj2.pos.y -= overlapY;
-                //TODO: Communicate with ground check boolean and jump functionality
+                obj2.pos.y += overlapY;
+                //Puts obj2 in a grounded state
+                obj2.onGround = true;
             }
         }
         //If obj2 is static, obj1 is moved
@@ -117,17 +118,58 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
             //Halts obj1's velocity and acceleration
             obj1.vel.y = obj1.acc.y = 0.0f;
             //obj1 is above obj2
-            if (deltaY > 0) {
-                obj1.pos.y -= overlapY;
-                //TODO: Communicate with ground check boolean and jump functionality
+            if (deltaY < 0) {
+                obj1.pos.y += overlapY;
+                //Puts obj1 in a grounded state
+                obj1.onGround = true;
             }
             //obj1 is below obj2
             else {
-                obj1.pos.y += overlapY;
+                obj1.pos.y -= overlapY;
             }
         }
         //If neither object is static, both are...actually what *would* happen?
+        /*
+        AD: I have coded this in such a way that it only just works on a basic level. A duct tape solution, if you will
+        The code assumes neither objects are moving upwards
+        As a result, certain scenarios will not work properly and produce unfavorable outcomes
+        e.g. The player jumping into a box hanging over a ledge and dying from colliding with the bottom of the box
+        I can come back and refine this later, but considering our time crunch I thought it better to just get it functional rather than optimal
+        If that is the case, I believe I can utilize the onGround boolean in creative ways to determine vertical movement
+        But the exact mechanics and method to do that would take time to figure out
+        */
         else {
+            //obj1 is above obj2
+            if (deltaY < 0) {
+                //If obj2 is the player, the function returns false to signal that the player should be killed
+                if (obj2.isPlayer) {
+                    return false;
+                }
+                //Halts obj1's velocity and acceleration
+                obj1.vel.y = obj1.acc.y = 0.0f;
+                //obj1 is moved
+                obj1.pos.y += overlapY;
+                //If obj2 is grounded, obj1 becomes grounded as well
+                if (obj2.onGround) {
+                    obj1.onGround = true;
+                }
+            }
+            //obj1 is below obj2
+            else {
+                //If obj1 is the player, the function returns false to signal that the player should be killed
+                if (obj1.isPlayer) {
+                    return false;
+                }
+                //Halts obj2's velocity and acceleration
+                obj2.vel.y = obj2.acc.y = 0.0f;
+                //obj2 is moved
+                obj2.pos.y += overlapY;
+                //If obj1 is grounded, obj2 becomes grounded as well
+                if (obj1.onGround) {
+                    obj2.onGround = true;
+                }
+            }
+
             //AD: Different states:
             // - If player is above box, player stands on box as though it is static and box remains stationary
             // - If player is below box, player is crushed(?)
@@ -136,6 +178,9 @@ void Collision::ResolveCollision(Entity& obj1, Entity& obj2) {
     }
     //If horizontal and vertical overlap are identical, resolves corner collision
     else {
-        //TODO: Implement corner collision resolution
+        //AD: Considering how unlikely this occurance is, a message should be enough effort to afford to this outlier
+        std::cout << "Corner collision occured! Law of large numbers I suppose...\n";
     }
+    //Returns true if no player death occurs
+    return true;
 }

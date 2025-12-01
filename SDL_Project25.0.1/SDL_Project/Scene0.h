@@ -22,13 +22,13 @@ private:
 	Entity* player;
 	Collision collision;
 	Entity* background;
+	Vec3 gravForce;
 
 	//movement booleans
 	bool movingLeft;
 	bool movingRight;
 	bool jumpInput;
-	bool isJumping;
-	bool isOnGround;
+	float jumpStrength;
 
 	//Non-Static objects
 	std::vector<Entity*> objects;

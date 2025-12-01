@@ -7,11 +7,15 @@ Entity::Entity() : // this is an initializer list
 	, mass(1.0f)
 	, radius(1.0f)
 {
+	isPlayer = false;
+	isStatic = false;
+	onGround = false;
 }
 
 Entity::~Entity() {
 	// This is the destructor for Entity (notice the little squiggle ~)
 	// Clean up the surface and texture data
+	//AD: Why are these commented out?
 	//SDL_DestroySurface(surface);
 	//SDL_DestroyTexture(texture);
 	surface = nullptr;
@@ -28,45 +32,43 @@ void Entity::SetImage(const char* filename, SDL_Renderer* renderer) {
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 }
 
-void Entity::ApplyForce(Vec3 netForce)
-{
+void Entity::ApplyForce(Vec3 netForce) {
 	acc = netForce / mass;
 }
 
-void Entity::Update(float deltaTime)
-{
+void Entity::Update(float deltaTime) {
 	vel += acc * deltaTime;
 	pos += vel * deltaTime + 0.5f * acc * (deltaTime * deltaTime);
 }
 
 // Handle collision with window borders
-Vec3 Entity::BorderCollision(float playerScale) {
-	if (pos.x - playerScale / 2 < 0.0f) {
-		pos.x = playerScale / 2;
-		vel.x *= -1.0f;
-	}
-	else if (pos.x > 30.0f) {
-		pos.x = 30.0f;
-		vel.x *= -1.0f;
-	}
-
-	if (pos.y - playerScale / 2 < 0.0f) {
-		pos.y = playerScale / 2;
-	}
-	else if (pos.y > 15.0f) {
-		pos.y = 15.0f;
-		vel.y *= -1.0f;
-	}
-
-	return pos, vel;
-}
+//Vec3 Entity::BorderCollision(float playerScale) {
+//	if (pos.x - playerScale / 2 < 0.0f) {
+//		pos.x = playerScale / 2;
+//		vel.x *= -1.0f;
+//	}
+//	else if (pos.x > 30.0f) {
+//		pos.x = 30.0f;
+//		vel.x *= -1.0f;
+//	}
+//
+//	if (pos.y - playerScale / 2 < 0.0f) {
+//		pos.y = playerScale / 2;
+//	}
+//	else if (pos.y > 15.0f) {
+//		pos.y = 15.0f;
+//		vel.y *= -1.0f;
+//	}
+//
+//	return pos, vel;
+//}
 // Handels left and right movement using keyAdown and keyDdown boolean check
-void Entity::xInput(bool keyAdown, bool keyDdown) {
-
-	if (keyAdown && !keyDdown)
-		vel.x = -speed;
-	else if (!keyAdown && keyDdown)
-		vel.x = speed;
-	else
-		vel.x = 0.0f;
-}
+//void Entity::xInput(bool keyAdown, bool keyDdown) {
+//
+//	if (keyAdown && !keyDdown)
+//		vel.x = -speed;
+//	else if (!keyAdown && keyDdown)
+//		vel.x = speed;
+//	else
+//		vel.x = 0.0f;
+//}

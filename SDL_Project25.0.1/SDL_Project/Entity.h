@@ -20,13 +20,9 @@ public:
 	Vec3 acc;
 	Vec3 size;
 	float mass;
-	float speed = 15.0f;
-	float g = 9.8f;
-	float facingDir = 1;
-
-	bool isStatic = false;
-
-	bool OnGround = true; //player is on the ground from the start
+	bool isPlayer;
+	bool isStatic;
+	bool onGround;
 	// Let's pretend all entities are circles
 	float radius;
 
@@ -36,11 +32,14 @@ public:
 
 	void ApplyForce(Vec3 netForce);
 	void Update(float deltaTime);
+	//AD: Future idea: utilize the isPlayer boolean to localize player movement to the entity file rather than in each individual scene
+
+	//AD: Are we really going to use any of these?
 	//void MoveLeft(float deltaTime);
 	//void MoveRight(float deltaTime);
-	void MoveUP(float deltaTime);
-	Vec3 BorderCollision(float playerScale);
-	void xInput(bool keyAdown, bool keyDdown);
+	//void MoveUP(float deltaTime);
+	//Vec3 BorderCollision(float playerScale);
+	//void xInput(bool keyAdown, bool keyDdown);
 
 
 	// Need getters for private member variables. 
