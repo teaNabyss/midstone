@@ -192,7 +192,6 @@ void Scene0::Update(const float deltaTime) {
 	if (player->vel.y < 0.0f) {
 		player->onGround = false;
 	}
-	std::cout << player->onGround << "\n";
 	//If the player is grounded, jump input is checked and executed if true
 	if (player->onGround && jumpInput) {
 		player->vel.y += jumpStrength;
@@ -212,7 +211,6 @@ void Scene0::Update(const float deltaTime) {
 	for (int i = 0; i < platforms.size(); i += 1) {
 		if (collision.CheckCollision(*player, *platforms[i])) {
 			collision.ResolveCollision(*player, *platforms[i]);
-			std::cout << player->onGround << "\n";
 		}
 		for (int j = 0; j < objects.size(); j += 1) {
 			if (collision.CheckCollision(*objects[j], *platforms[i])) {
@@ -230,8 +228,8 @@ void Scene0::Update(const float deltaTime) {
 			}
 		}
 		for (int j = i + 1; j < objects.size(); j += 1) {
-			if (collision.CheckCollision(*objects[j], *platforms[i])) {
-				collision.ResolveCollision(*objects[j], *platforms[i]);
+			if (collision.CheckCollision(*objects[j], *objects[i])) {
+				collision.ResolveCollision(*objects[j], *objects[i]);
 			}
 		}
 	}
