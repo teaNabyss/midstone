@@ -108,8 +108,8 @@ bool Scene0::OnCreate() {
 
 	// ┬─┬ノ(ಠ_ಠノ)
 	camera = new Camera;
-	cameraSquare = {0,0,30,15};
-
+	camera->cameraRect = {0,0,30,15};
+	camera->pos = Vec3(camera->cameraRect.x, camera->cameraRect.y, 0.0f);
 	return true;
 }
 
@@ -139,6 +139,10 @@ void Scene0::OnDestroy() {
 		delete platforms[i];
 		platforms[i] = nullptr;
 	}
+
+	// Destroy it (╯｀0´)╯( ┻━┻
+	delete camera;
+	camera = nullptr;
 
 }
 
@@ -212,16 +216,8 @@ void Scene0::Update(const float deltaTime) {
 			}
 		}
 	}
-	//Camera stuff ಠ_ಠ
-	float lerpSpeed = 10.0f;
-
-	// Center camera on player
-	cameraSquare.x = player->pos.x - (cameraSquare.w * 0.5f);
-	cameraSquare.y = player->pos.y - (cameraSquare.h * 0.5f);
-
-	// Clamp camera to world bounds 
-	if (cameraSquare.x < 0.0f) cameraSquare.x = 0.0f;
-	if (cameraSquare.y < 0.0f) cameraSquare.y = 0.0f;
+	//Camera now follows you ಠ_ಠ
+	camera->Follow(player->pos);
 
 }
 
@@ -229,13 +225,7 @@ void Scene0::Render() const {
 	SDL_RenderClear(renderer);
 	SDL_FRect square;
 
-	// Renders player
-	// Subtract camera position (world space)
-	Vec3 relativePos = player->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
-	Vec3 screenCoords = camera->GetProjectionMatrix() * relativePos;
-
-
-	// Apply projection matrix to convert to screen space
+	Vec3 screenCoords = camera->WorldToScreen(player->pos);
 	square.x = screenCoords.x;
 	square.y = screenCoords.y;
 	square.w = player->size.x * camera->GetProjectionMatrix()[0];
@@ -246,8 +236,8 @@ void Scene0::Render() const {
 
 	// Renders objects
 	for (int i = 0; i < objects.size(); i += 1) {
-		relativePos = objects[i]->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
-		screenCoords = camera->GetProjectionMatrix() * relativePos;
+
+		screenCoords = camera->WorldToScreen(objects[i]->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
 		square.w = objects[i]->size.x * camera->GetProjectionMatrix()[0];
@@ -259,8 +249,8 @@ void Scene0::Render() const {
 
 	// Renders platforms (same pattern)
 	for (int i = 0; i < platforms.size(); i += 1) {
-		relativePos = platforms[i]->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
-		screenCoords = camera->GetProjectionMatrix() * relativePos;
+
+		screenCoords = camera->WorldToScreen(platforms[i]->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
 		square.w = platforms[i]->size.x * camera->GetProjectionMatrix()[0];

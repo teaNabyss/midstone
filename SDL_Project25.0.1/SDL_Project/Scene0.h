@@ -1,4 +1,4 @@
-#ifndef SCENE0_H
+﻿#ifndef SCENE0_H
 #define SCENE0_H
 #include <SDL3/SDL.h>
 #include <Matrix.h>
@@ -36,7 +36,7 @@ private:
 	std::vector<Entity*> platforms;
 
 	Camera* camera;
-	SDL_FRect cameraSquare; //should've been FRect -> float
+	//SDL_FRect cameraSquare; //should've been FRect -> float (¬‿¬)
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
 public:
