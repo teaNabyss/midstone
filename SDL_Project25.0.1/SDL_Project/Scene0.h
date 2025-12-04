@@ -20,6 +20,7 @@ private:
 	SDL_Renderer* renderer;
 
 	Entity* player;
+	Entity* portal;
 	Collision collision;
 	Entity* background;
 	Vec3 gravForce;
@@ -28,6 +29,8 @@ private:
 	bool movingLeft;
 	bool movingRight;
 	bool jumpInput;
+	bool sceneComplete = false;
+	bool playerDeath = false;
 	float jumpStrength;
 
 	//Non-Static objects
@@ -43,6 +46,8 @@ private:
 public:
 	Scene0(SDL_Window* sdlWindow);
 	~Scene0();
+	bool IsComplete() const override { return sceneComplete; }
+	bool PlayerDeath() const override { return playerDeath; }
 	bool OnCreate() override;
 	void OnDestroy() override;
 	void HandleEvents(const SDL_Event& event) override;
