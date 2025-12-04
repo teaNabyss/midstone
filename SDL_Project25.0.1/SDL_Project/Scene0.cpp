@@ -12,7 +12,15 @@ Scene0::Scene0(SDL_Window* sdlWindow_) :
 	, xAxis(30.0f)
 	, yAxis(15.0f)
 {
-
+	player = nullptr;
+	background = nullptr;
+	camera = nullptr;
+	mixer = nullptr;
+	movingLeft = false;
+	movingRight = false;
+	jumpInput = false;
+	jumpStrength = 10.0f;
+	gravForce = Vec3(0.0f, -9.8f, 0.0f);
 }
 
 Scene0::~Scene0(){
@@ -33,34 +41,30 @@ bool Scene0::OnCreate() {
 	}
 	//Initialize renderer color (black)
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	
-	movingLeft = false;
-	movingRight = false;
-	jumpInput = false;
-	isJumping = false;
-	isOnGround = false;
 
 	// Create the objects that will be rendered on the screen
 	background = new Entity();
 	background->pos = Vec3(0.0f, 16.0f, 0.0f);
 	background->SetImage("textures/background.png", renderer);
 	std::cout << "Backround created" << std::endl;
-	//Create a player entity
+	//Creates a player entity
 	player = new Entity();
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
-	player->mass = 2.0f;
+	player->mass = 5.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
 	player->pos = Vec3(4.0f, 8.0f, 0.0f);
+	player->isPlayer = true;
 	player->isStatic = false;
+	player->onGround = true;
 	//Creates a box entity and places it below the player
 	auto box1 = new Entity();
 	box1->SetImage("textures/Crate.png", renderer);
 	box1->mass = 2.0f;
 	box1->size = Vec3(2.0f, 2.0f, 0.0f);
 	box1->pos = Vec3(4.0f, 2.0f, 0.0f);
-	//AD: For the sake of testing, the box is currently static
-	box1->isStatic = true;
-	platforms.emplace_back(box1);
+	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
+	box1->isStatic = false;
+	objects.emplace_back(box1);
 	//Another box, now on a floating platform
 	auto box2 = new Entity();
 	box2->SetImage("textures/Crate.png", renderer);
@@ -91,6 +95,15 @@ bool Scene0::OnCreate() {
 	//plat3->pos = Vec3(30.0f, 4.0f, 0.0f);
 	//plat3->isStatic = true;
 	//platforms.emplace_back(plat3);
+
+	// End Game Portal
+
+	portal = new Entity();
+	portal->SetImage("textures/PurplePortal.png", renderer);
+	portal->mass = 0.0f;
+	portal->size = Vec3(2.0f, 3.0f, 0.0f);
+	portal->pos = Vec3(28.0f, 5.0f, 0.0f);
+	portal->isStatic = true;
 
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
@@ -144,6 +157,9 @@ void Scene0::OnDestroy() {
 	delete camera;
 	camera = nullptr;
 
+	delete portal;
+	portal = nullptr;
+	
 }
 
 void Scene0::HandleEvents(const SDL_Event& event) {
@@ -157,6 +173,9 @@ void Scene0::HandleEvents(const SDL_Event& event) {
 			}
 			if (event.key.scancode == SDL_SCANCODE_SPACE) {
 				jumpInput = true;
+			}
+			if (event.key.scancode == SDL_SCANCODE_R) {
+				playerDeath = true;
 			}
 			break;
 		case SDL_EVENT_KEY_UP:
@@ -184,14 +203,29 @@ void Scene0::Update(const float deltaTime) {
 	else {
 		player->vel.x = 0.0f;
 	}
+	//Validates the grounded states of objects by checking their y velocity
+	for (int i = 0; i < objects.size(); i += 1) {
+		if (objects[i]->vel.y < 0.0f) {
+			objects[i]->onGround = false;
+		}
+	}
+	//Validates the grounded state of the player by checking their y velocity
+	if (player->vel.y < 0.0f) {
+		player->onGround = false;
+	}
+	//If the player is grounded, jump input is checked and executed if true
+	if (player->onGround && jumpInput) {
+		player->vel.y += jumpStrength;
+		player->onGround = false;
+	}
 	//Applies gravity to the player
-	player->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
+	player->ApplyForce(gravForce * player->mass);
 	player->Update(deltaTime);
 	//TODO: Implement spacial partisioning
 	//Applies gravity to the objects
-	//AD: I'm not combining this with the collision loop to facilitate using an object's y velocity to tell whether or not 
+	//AD: I'm not combining this with the collision loop to facilitate using an object's y velocity to tell whether or not it is grounded
 	for (int i = 0; i < objects.size(); i += 1) {
-		objects[i]->ApplyForce(Vec3(0.0f, -9.8f, 0.0f));
+		objects[i]->ApplyForce(gravForce * objects[i]->mass);
 		objects[i]->Update(deltaTime);
 	}
 	//Checks for collision between the player/objects and platforms
@@ -208,17 +242,27 @@ void Scene0::Update(const float deltaTime) {
 	//Checks for collision between the player/objects and objects
 	for (int i = 0; i < objects.size(); i += 1) {
 		if (collision.CheckCollision(*player, *objects[i])) {
-			collision.ResolveCollision(*player, *objects[i]);
+			//Kills the player if collision resolution returns false
+			if (!collision.ResolveCollision(*player, *objects[i])) {
+				//TODO: Read below
+				std::cout << "Player would die! Implementation to restart the scene is needed!\n";
+			}
 		}
 		for (int j = i + 1; j < objects.size(); j += 1) {
-			if (collision.CheckCollision(*objects[j], *platforms[i])) {
-				collision.ResolveCollision(*objects[j], *platforms[i]);
+			if (collision.CheckCollision(*objects[j], *objects[i])) {
+				collision.ResolveCollision(*objects[j], *objects[i]);
 			}
 		}
 	}
+	//Prints player grounded state for debug purposes
+	std::cout << player->onGround << "\n";
+	//Camera stuff
 	//Camera now follows you ಠ_ಠ
 	camera->Follow(player->pos);
 
+	if (portal && collision.CheckCollision(*player, *portal)) {
+		sceneComplete = true;
+	}
 }
 
 void Scene0::Render() const {
@@ -259,6 +303,17 @@ void Scene0::Render() const {
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
+	if (portal) {
+		screenCoords = camera->GetProjectionMatrix() * portal->pos;
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
+		square.w = portal->size.x * camera->GetProjectionMatrix()[0];
+		square.h = portal->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.x -= square.w / 2;
+		square.y -= square.h / 2;
 
+		SDL_RenderTextureRotated(renderer, portal->GetTexture(), nullptr, &square, portal->angleDeg, nullptr, SDL_FLIP_NONE);
+	}
+	// Update the screen
 	SDL_RenderPresent(renderer);
 }

@@ -14,9 +14,9 @@ public:
 	~Collision();
 	void BorderCollision(Entity& obj);
 	bool CheckCollision(Entity& obj1, Entity& obj2);
-	void ResolveCollision(Entity& obj1, Entity& obj2);
+	bool ResolveCollision(Entity& obj1, Entity& obj2);
 	void drawAwallBox(Wall& solid);
-	void drawAplayerBox();
+	//void drawAplayerBox();
 
 
 };

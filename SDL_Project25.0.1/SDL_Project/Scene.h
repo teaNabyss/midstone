@@ -4,11 +4,13 @@
 class Scene {
 public:
 	virtual bool OnCreate() = 0;
+	virtual bool IsComplete() const { return false; }
+	virtual bool PlayerDeath() const { return false; }
 	virtual void OnDestroy() = 0;
 	virtual void Update(const float time) = 0;
 	virtual void Render() const = 0;
 	virtual void HandleEvents(const SDL_Event &event) = 0;
-
+	
 };
 
 #endif

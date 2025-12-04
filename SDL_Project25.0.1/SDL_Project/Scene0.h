@@ -20,15 +20,18 @@ private:
 	SDL_Renderer* renderer;
 
 	Entity* player;
+	Entity* portal;
 	Collision collision;
 	Entity* background;
+	Vec3 gravForce;
 
 	//movement booleans
 	bool movingLeft;
 	bool movingRight;
 	bool jumpInput;
-	bool isJumping;
-	bool isOnGround;
+	bool sceneComplete = false;
+	bool playerDeath = false;
+	float jumpStrength;
 
 	//Non-Static objects
 	std::vector<Entity*> objects;
@@ -42,6 +45,8 @@ private:
 public:
 	Scene0(SDL_Window* sdlWindow);
 	~Scene0();
+	bool IsComplete() const override { return sceneComplete; }
+	bool PlayerDeath() const override { return playerDeath; }
 	bool OnCreate() override;
 	void OnDestroy() override;
 	void HandleEvents(const SDL_Event& event) override;

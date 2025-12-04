@@ -18,6 +18,7 @@ private:
 	class Timer *timer;
 	bool isRunning;
 	Scene *currentScene;
+	int currentLevel = 0;
 	
 
 public:

@@ -134,21 +134,21 @@ void Player::Update(const float deltaTime) {
 	Vec3 PlayerGravForce = player->mass * gravAccel;
 
 	// applies x motion on player
-		player->xInput(keyAdown, keyDdown);
+		//player->xInput(keyAdown, keyDdown);
 	// Jump
 	float g = 9.8f; //gravity
 	float jumpForce = sqrt(2.0f * g * jumpHeight); // how fast will player jump considering height and gravity
 	//const float jumpDistance = 4.0f; 
 
-	if (SpaceDown && player->OnGround) {
-  		player->vel.y = jumpForce;  // pushes up/ jump itsellf
-		player->OnGround = false;
-	}
+	//if (SpaceDown && player->OnGround) {
+	// 	player->vel.y = jumpForce;  // pushes up/ jump itsellf
+	//	player->OnGround = false;
+	//}
 		player->ApplyForce(PlayerGravForce); // apllies gravity
 
 	
 	// moves background in opposite direction to player with half of player's speed
-	float move = (player->speed * 0.5f) * deltaTime;
+	//float move = (player->speed * 0.5f) * deltaTime;
 
 	//if (keyAdown) {
 	//	background->pos.x += move;
@@ -166,10 +166,10 @@ void Player::Update(const float deltaTime) {
 	if (player->pos.y - player->size.y / 2 <= 0.0f) {
 		player->pos.y = player->size.y / 2;  // go back on the ground
 		//player->vel.y = 0.0f;
-		player->OnGround = true;
+		//player->OnGround = true;
 	}
 	else {
-		player->OnGround = false;
+		//player->OnGround = false;
 	}
 
 	// Collision with borders
