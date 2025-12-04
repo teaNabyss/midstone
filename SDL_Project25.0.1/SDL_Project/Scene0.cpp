@@ -213,18 +213,16 @@ void Scene0::Update(const float deltaTime) {
 		}
 	}
 	//Camera stuff ಠ_ಠ
-	float worldWidth = 30.0f; // / camera->GetProjectionMatrix()[0];  // Convert pixel width to world units
-	float worldHeight = 15.0f; // / std::abs(camera->GetProjectionMatrix()[5]);  // Convert pixel height to world units
+	float lerpSpeed = 10.0f;
 
 	// Center camera on player
-	cameraSquare.x = player->pos.x - (worldWidth * 0.5f);
-	cameraSquare.y = player->pos.y - (worldHeight * 0.5f);
+	cameraSquare.x = player->pos.x - (cameraSquare.w * 0.5f);
+	cameraSquare.y = player->pos.y - (cameraSquare.h * 0.5f);
 
-	// Clamp camera to world bounds (adjust these limits to your actual world size)
-	if (cameraSquare.x < 0)
-		cameraSquare.x = 0;
-	if (cameraSquare.y < 0)
-		cameraSquare.y = 0;
+	// Clamp camera to world bounds 
+	if (cameraSquare.x < 0.0f) cameraSquare.x = 0.0f;
+	if (cameraSquare.y < 0.0f) cameraSquare.y = 0.0f;
+
 }
 
 void Scene0::Render() const {
@@ -235,6 +233,7 @@ void Scene0::Render() const {
 	// Subtract camera position (world space)
 	Vec3 relativePos = player->pos - Vec3(cameraSquare.x, cameraSquare.y, 0.0f);
 	Vec3 screenCoords = camera->GetProjectionMatrix() * relativePos;
+
 
 	// Apply projection matrix to convert to screen space
 	square.x = screenCoords.x;
