@@ -43,10 +43,12 @@ bool Scene0::OnCreate() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 	// Create the objects that will be rendered on the screen
+
 	background = new Entity();
-	background->pos = Vec3(0.0f, 16.0f, 0.0f);
 	background->SetImage("textures/background.png", renderer);
-	std::cout << "Backround created" << std::endl;
+	background->pos = Vec3(0.0f, 16.0f, 0.0f);
+	std::cout << "Background created" << std::endl;
+
 	//Creates a player entity
 	player = new Entity();
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
@@ -160,6 +162,9 @@ void Scene0::OnDestroy() {
 	delete portal;
 	portal = nullptr;
 	
+	delete background;
+	background = nullptr;
+
 }
 
 void Scene0::HandleEvents(const SDL_Event& event) {
@@ -256,6 +261,7 @@ void Scene0::Update(const float deltaTime) {
 	}
 	//Prints player grounded state for debug purposes
 	std::cout << player->onGround << "\n";
+
 	//Camera stuff
 	//Camera now follows you ಠ_ಠ
 	camera->Follow(player->pos);
@@ -268,17 +274,18 @@ void Scene0::Update(const float deltaTime) {
 void Scene0::Render() const {
 	SDL_RenderClear(renderer);
 	SDL_FRect square;
-
-	Vec3 screenCoords = camera->WorldToScreen(player->pos);
-	square.x = screenCoords.x;
-	square.y = screenCoords.y;
-	square.w = player->size.x * camera->GetProjectionMatrix()[0];
-	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
-	square.x -= square.w / 2;
-	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
-
+	Vec3 screenCoords;
 	// Renders objects
+
+		screenCoords = camera->WorldToScreen(background->pos);
+		square.x = screenCoords.x;
+		square.y = screenCoords.y;
+		square.w = background->size.x * camera->GetProjectionMatrix()[0];
+		square.h = background->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.x -= square.w / 2;
+		square.y -= square.h / 2;
+		SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
+
 	for (int i = 0; i < objects.size(); i += 1) {
 
 		screenCoords = camera->WorldToScreen(objects[i]->pos);
@@ -314,6 +321,16 @@ void Scene0::Render() const {
 
 		SDL_RenderTextureRotated(renderer, portal->GetTexture(), nullptr, &square, portal->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
+
+	screenCoords = camera->WorldToScreen(player->pos);
+	square.x = screenCoords.x;
+	square.y = screenCoords.y;
+	square.w = player->size.x * camera->GetProjectionMatrix()[0];
+	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+	square.x -= square.w / 2;
+	square.y -= square.h / 2;
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+
 	// Update the screen
 	SDL_RenderPresent(renderer);
 }

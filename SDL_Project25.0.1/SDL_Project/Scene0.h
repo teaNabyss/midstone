@@ -21,8 +21,8 @@ private:
 
 	Entity* player;
 	Entity* portal;
-	Collision collision;
 	Entity* background;
+	Collision collision;
 	Vec3 gravForce;
 
 	//movement booleans
