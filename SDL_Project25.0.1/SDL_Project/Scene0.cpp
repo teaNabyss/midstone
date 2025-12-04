@@ -304,7 +304,7 @@ void Scene0::Render() const {
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
 	if (portal) {
-		screenCoords = camera->GetProjectionMatrix() * portal->pos;
+		screenCoords = camera->WorldToScreen(portal->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
 		square.w = portal->size.x * camera->GetProjectionMatrix()[0];
