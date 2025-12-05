@@ -22,6 +22,7 @@ private:
 	Entity* player;
 	Entity* portal;
 	Entity* background;
+	Entity* OtherBackground;
 	Collision collision;
 	Vec3 gravForce;
 
@@ -37,6 +38,7 @@ private:
 	std::vector<Entity*> objects;
 	//Static platforms/level geometry
 	std::vector<Entity*> platforms;
+	std::vector<Entity*> backgrounds;
 
 	Camera* camera;
 	//SDL_FRect cameraSquare; //should've been FRect -> float (¬‿¬)

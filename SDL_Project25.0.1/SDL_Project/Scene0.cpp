@@ -46,8 +46,21 @@ bool Scene0::OnCreate() {
 
 	background = new Entity();
 	background->SetImage("textures/background.png", renderer);
-	background->pos = Vec3(0.0f, 16.0f, 0.0f);
+	background->pos = Vec3(15.0f, 8.0f, 0.0f);
+	background->size = Vec3(30.0f, 15.0f, 0.0f);
+	backgrounds.emplace_back(background);
 	std::cout << "Background created" << std::endl;
+
+	int numOfBackgrounds = 4;
+	for (int index = 1; index < numOfBackgrounds; index++) {
+		std::cout << "Background Index: " << index << std::endl;
+		OtherBackground = new Entity();
+		OtherBackground->SetImage("textures/background.png", renderer);
+		OtherBackground->pos = Vec3(backgrounds.back()->pos.x + 29.9f, 8.0f, 0.0f);
+		OtherBackground->size = Vec3(30.0f, 15.0f, 0.0f);
+		backgrounds.emplace_back(OtherBackground);
+		std::cout << "Background created" << std::endl;
+	}
 
 	//Creates a player entity
 	player = new Entity();
@@ -277,14 +290,16 @@ void Scene0::Render() const {
 	Vec3 screenCoords;
 	// Renders objects
 
-		screenCoords = camera->WorldToScreen(background->pos);
+	for (int i = 0; i < backgrounds.size(); i += 1) {
+		screenCoords = camera->WorldToScreen(backgrounds[i]->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
-		square.w = background->size.x * camera->GetProjectionMatrix()[0];
-		square.h = background->size.y * std::abs(camera->GetProjectionMatrix()[5]);
+		square.w = backgrounds[i]->size.x * camera->GetProjectionMatrix()[0];
+		square.h = backgrounds[i]->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 		square.x -= square.w / 2;
 		square.y -= square.h / 2;
-		SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
+		SDL_RenderTextureRotated(renderer, backgrounds[i]->GetTexture(), nullptr, &square, backgrounds[i]->angleDeg, nullptr, SDL_FLIP_NONE);
+	}
 
 	for (int i = 0; i < objects.size(); i += 1) {
 
