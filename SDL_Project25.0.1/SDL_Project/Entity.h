@@ -26,6 +26,7 @@ public:
 	float rewindTimer;
 	float rewindMaxTimer;
 	Vec3 ogPos;
+	bool autoRewind;
 	// Let's pretend all entities are circles
 	float radius;
 

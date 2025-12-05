@@ -98,7 +98,8 @@ bool Scene0::OnCreate() {
 	box2->pos = box2->ogPos = Vec3(20.0f, 7.0f, 0.0f);
 	box2->isStatic = false;
 	box2->rewindTimer = 0.0f;
-	box2->rewindMaxTimer = 100.0f;
+	box2->rewindMaxTimer = 10.0f;
+	box2->autoRewind = true;
 	objects.emplace_back(box2);
 	//Test level platforms
 	auto plat1 = new Entity();
@@ -248,6 +249,10 @@ void Scene0::Update(const float deltaTime) {
 				objects[i]->rewindTimer -= 0.1f;
 				//Prints object timer for debug purposes
 				std::cout << "Box " << i + 1 << ": " << objects[i]->rewindTimer << "\n";
+			}
+			//Starts auto rewind timers for any objects set to do so
+			if (objects[i]->autoRewind && objects[i]->rewindTimer == 0.0f) {
+				objects[i]->rewindTimer = objects[i]->rewindMaxTimer;
 			}
 		}
 		if (objects[i]->vel.y < 0.0f) {

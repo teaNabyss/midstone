@@ -14,6 +14,7 @@ Entity::Entity() : // this is an initializer list
 	rewindTimer = -1.0f;
 	//Uses -1 to indicate the object cannot rewind
 	rewindMaxTimer = -1.0f;
+	autoRewind = false;
 }
 
 Entity::~Entity() {
