@@ -47,6 +47,8 @@ public:
 	~Scene0();
 	bool IsComplete() const override { return sceneComplete; }
 	bool PlayerDeath() const override { return playerDeath; }
+	//Rewinds an object
+	bool RewindObj(int i);
 	bool OnCreate() override;
 	void OnDestroy() override;
 	void HandleEvents(const SDL_Event& event) override;

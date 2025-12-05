@@ -23,6 +23,9 @@ public:
 	bool isPlayer;
 	bool isStatic;
 	bool onGround;
+	float rewindTimer;
+	float rewindMaxTimer;
+	Vec3 ogPos;
 	// Let's pretend all entities are circles
 	float radius;
 

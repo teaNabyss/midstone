@@ -10,6 +10,10 @@ Entity::Entity() : // this is an initializer list
 	isPlayer = false;
 	isStatic = false;
 	onGround = false;
+	//Uses -1 to indicate there is no timer set
+	rewindTimer = -1.0f;
+	//Uses -1 to indicate the object cannot rewind
+	rewindMaxTimer = -1.0f;
 }
 
 Entity::~Entity() {

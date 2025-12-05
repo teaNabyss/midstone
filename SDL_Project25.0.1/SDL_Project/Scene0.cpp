@@ -27,6 +27,29 @@ Scene0::~Scene0(){
 
 }
 
+bool Scene0::RewindObj(int i) {
+	//Stops the object's timer (in the case of recursion, stops a telefraged object's timer IF it has one)
+	objects[i]->rewindTimer = 0.0f;
+	//Rewinds the object to its original position
+	objects[i]->pos = objects[i]->ogPos;
+	//Checks if the player is in the rewind location, returning false to kill the player if so
+	if (collision.CheckCollision(*player, *objects[i])) {
+		return false;
+	}
+	//Checks to see if any objects are in the rewind location
+	for (int j = 0; j < objects.size(); j += 1) {
+		//Skips checking collision against itself
+		if (j != i && collision.CheckCollision(*objects[j], *objects[i])) {
+			//If another object is in the rewind location, rewinds that object as well to reset it to its default position
+			if (!RewindObj(j)) {
+				return false;
+			}
+		}
+	}
+	//Returns true to state the rewind is complete
+	return true;
+}
+
 bool Scene0::OnCreate() {
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
@@ -52,7 +75,7 @@ bool Scene0::OnCreate() {
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	player->mass = 5.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
-	player->pos = Vec3(4.0f, 8.0f, 0.0f);
+	player->pos = player->ogPos = Vec3(4.0f, 8.0f, 0.0f);
 	player->isPlayer = true;
 	player->isStatic = false;
 	player->onGround = true;
@@ -61,17 +84,21 @@ bool Scene0::OnCreate() {
 	box1->SetImage("textures/Crate.png", renderer);
 	box1->mass = 2.0f;
 	box1->size = Vec3(2.0f, 2.0f, 0.0f);
-	box1->pos = Vec3(4.0f, 2.0f, 0.0f);
+	box1->pos = box1->ogPos = Vec3(4.0f, 2.0f, 0.0f);
 	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
 	box1->isStatic = false;
+	box1->rewindTimer = 0.0f;
+	box1->rewindMaxTimer = 100.0f;
 	objects.emplace_back(box1);
 	//Another box, now on a floating platform
 	auto box2 = new Entity();
 	box2->SetImage("textures/Crate.png", renderer);
 	box2->mass = 2.0f;
 	box2->size = Vec3(2.0f, 2.0f, 0.0f);
-	box2->pos = Vec3(20.0f, 7.0f, 0.0f);
+	box2->pos = box2->ogPos = Vec3(20.0f, 7.0f, 0.0f);
 	box2->isStatic = false;
+	box2->rewindTimer = 0.0f;
+	box2->rewindMaxTimer = 100.0f;
 	objects.emplace_back(box2);
 	//Test level platforms
 	auto plat1 = new Entity();
@@ -203,8 +230,26 @@ void Scene0::Update(const float deltaTime) {
 	else {
 		player->vel.x = 0.0f;
 	}
-	//Validates the grounded states of objects by checking their y velocity
+	//Validates the grounded states of objects by checking their y velocity. Rewind timer logic is also housed in this loop
 	for (int i = 0; i < objects.size(); i += 1) {
+		//Checks if an object can be rewinded
+		if (objects[i]->rewindMaxTimer != -1.0f) {
+			//Checks the state of the timer
+			//Stops the timer and rewinds the object when the timer goes below 0
+			if (objects[i]->rewindTimer < 0.0f) {
+				//If a player is teleported on in the process, kill the player
+				if (!RewindObj(i)) {
+					//TODO: Read below
+					std::cout << "Player would die! Implementation to restart the scene is needed!\n";
+				}
+			}
+			//Otherwise, ticks down the timer if it is currently active
+			else if (objects[i]->rewindTimer > 0.0f) {
+				objects[i]->rewindTimer -= 0.1f;
+				//Prints object timer for debug purposes
+				std::cout << "Box " << i + 1 << ": " << objects[i]->rewindTimer << "\n";
+			}
+		}
 		if (objects[i]->vel.y < 0.0f) {
 			objects[i]->onGround = false;
 		}
@@ -221,7 +266,6 @@ void Scene0::Update(const float deltaTime) {
 	//Applies gravity to the player
 	player->ApplyForce(gravForce * player->mass);
 	player->Update(deltaTime);
-	//TODO: Implement spacial partisioning
 	//Applies gravity to the objects
 	//AD: I'm not combining this with the collision loop to facilitate using an object's y velocity to tell whether or not it is grounded
 	for (int i = 0; i < objects.size(); i += 1) {
@@ -247,15 +291,23 @@ void Scene0::Update(const float deltaTime) {
 				//TODO: Read below
 				std::cout << "Player would die! Implementation to restart the scene is needed!\n";
 			}
+			//If the object can rewind and it's timer hasn't started, starts its timer
+			if (objects[i]->rewindMaxTimer != -1.0f && objects[i]->rewindTimer == 0.0f) {
+				objects[i]->rewindTimer = objects[i]->rewindMaxTimer;
+			}
 		}
 		for (int j = i + 1; j < objects.size(); j += 1) {
 			if (collision.CheckCollision(*objects[j], *objects[i])) {
 				collision.ResolveCollision(*objects[j], *objects[i]);
+				//If the object can rewind and it's timer hasn't started, starts its timer
+				if (objects[i]->rewindMaxTimer != -1.0f && objects[i]->rewindTimer == 0.0f) {
+					objects[i]->rewindTimer = objects[i]->rewindMaxTimer;
+				}
 			}
 		}
 	}
 	//Prints player grounded state for debug purposes
-	std::cout << player->onGround << "\n";
+	//std::cout << player->onGround << "\n";
 	//Camera stuff
 	//Camera now follows you ಠ_ಠ
 	camera->Follow(player->pos);
