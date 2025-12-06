@@ -28,6 +28,9 @@ Scene0::~Scene0(){
 }
 
 bool Scene0::OnCreate() {
+
+	playerDeath = false; //  <~~~~~~~~~~~~~~ PLAYER DEATH SETs TO FALSE HERE
+
 	// Create a project matrix that moves positions from physics/world space 
 	// to screen/pixel space
 	int w, h;
@@ -44,6 +47,7 @@ bool Scene0::OnCreate() {
 
 	// Create the objects that will be rendered on the screen
 
+	//---------------------BACKGROUND----------------------
 	background = new Entity();
 	background->SetImage("textures/background.png", renderer);
 	background->pos = Vec3(15.0f, 8.0f, 0.0f);
@@ -62,21 +66,27 @@ bool Scene0::OnCreate() {
 		std::cout << "Background created" << std::endl;
 	}
 
-	//Creates a player entity
+
+	//------------------------PLAYER------------------------
 	player = new Entity();
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	player->mass = 5.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
-	player->pos = Vec3(4.0f, 8.0f, 0.0f);
+	player->pos = Vec3(6.0f, 2.0f, 0.0f);
 	player->isPlayer = true;
 	player->isStatic = false;
 	player->onGround = true;
-	//Creates a box entity and places it below the player
+	std::cout << "PLAYER position in ONCREATE" << std::endl;
+	player->pos.print();
+
+	//------------------------BOXES--------------------------
 	auto box1 = new Entity();
 	box1->SetImage("textures/Crate.png", renderer);
 	box1->mass = 2.0f;
 	box1->size = Vec3(2.0f, 2.0f, 0.0f);
 	box1->pos = Vec3(4.0f, 2.0f, 0.0f);
+	std::cout << "BOX 1 position in ONCREATE" << std::endl;
+	box1->pos.print();
 	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
 	box1->isStatic = false;
 	objects.emplace_back(box1);
@@ -86,9 +96,12 @@ bool Scene0::OnCreate() {
 	box2->mass = 2.0f;
 	box2->size = Vec3(2.0f, 2.0f, 0.0f);
 	box2->pos = Vec3(20.0f, 7.0f, 0.0f);
+	std::cout << "BOX 2 position in ONCREATE" << std::endl;
+	box2->pos.print();
 	box2->isStatic = false;
 	objects.emplace_back(box2);
-	//Test level platforms
+
+	//-------------------Test level platforms----------------
 	auto plat1 = new Entity();
 	plat1->SetImage("textures/Crate.png", renderer);
 	plat1->mass = 100.0f;
@@ -112,14 +125,16 @@ bool Scene0::OnCreate() {
 	//platforms.emplace_back(plat3);
 
 	// End Game Portal
-
+	//-----------------------PORTAL--------------------------
 	portal = new Entity();
 	portal->SetImage("textures/PurplePortal.png", renderer);
 	portal->mass = 0.0f;
 	portal->size = Vec3(2.0f, 3.0f, 0.0f);
-	portal->pos = Vec3(28.0f, 5.0f, 0.0f);
+	portal->pos = Vec3(28.0f, 15.0f, 0.0f);
 	portal->isStatic = true;
 
+
+	//-----------------------AUDIO---------------------------
 	SDL_Init(SDL_INIT_AUDIO);
 	MIX_Init();
 	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
@@ -134,6 +149,7 @@ bool Scene0::OnCreate() {
 	MIX_PlayAudio(mixer, Music);
 	MIX_DestroyAudio(Music);
 
+	//------------------------CAMERA-------------------------
 	// ┬─┬ノ(ಠ_ಠノ)
 	camera = new Camera;
 	camera->cameraRect = {0,0,30,15};
@@ -168,16 +184,15 @@ void Scene0::OnDestroy() {
 		platforms[i] = nullptr;
 	}
 
-	// Destroy it (╯｀0´)╯( ┻━┻
-	delete camera;
-	camera = nullptr;
-
 	delete portal;
 	portal = nullptr;
 	
 	delete background;
 	background = nullptr;
 
+	// Destroy it (╯｀0´)╯( ┻━┻
+	delete camera;
+	camera = nullptr;
 }
 
 void Scene0::HandleEvents(const SDL_Event& event) {
@@ -211,7 +226,9 @@ void Scene0::HandleEvents(const SDL_Event& event) {
 }
 
 void Scene0::Update(const float deltaTime) {
-	//Movement
+	
+	//-----------------MOVEMENT-----------------
+
 	if (movingLeft && !movingRight) {
 		player->vel.x = -10.0f;
 	}
@@ -221,6 +238,9 @@ void Scene0::Update(const float deltaTime) {
 	else {
 		player->vel.x = 0.0f;
 	}
+
+	//---------------GROUND-STATES--------------
+	
 	//Validates the grounded states of objects by checking their y velocity
 	for (int i = 0; i < objects.size(); i += 1) {
 		if (objects[i]->vel.y < 0.0f) {
@@ -236,17 +256,24 @@ void Scene0::Update(const float deltaTime) {
 		player->vel.y += jumpStrength;
 		player->onGround = false;
 	}
-	//Applies gravity to the player
-	player->ApplyForce(gravForce * player->mass);
-	player->Update(deltaTime);
+
+	//-----------------FORCES-------------------
+
 	//TODO: Implement spacial partisioning
 	//Applies gravity to the objects
 	//AD: I'm not combining this with the collision loop to facilitate using an object's y velocity to tell whether or not it is grounded
+	//Checks for collision between the player/objects and platforms
+	//Applies gravity to the player
+	player->ApplyForce(gravForce * player->mass);
+	player->Update(deltaTime);
+
 	for (int i = 0; i < objects.size(); i += 1) {
 		objects[i]->ApplyForce(gravForce * objects[i]->mass);
 		objects[i]->Update(deltaTime);
 	}
-	//Checks for collision between the player/objects and platforms
+
+	//--------------COLLISSIONS------------------
+
 	for (int i = 0; i < platforms.size(); i += 1) {
 		if (collision.CheckCollision(*player, *platforms[i])) {
 			collision.ResolveCollision(*player, *platforms[i]);
@@ -272,12 +299,16 @@ void Scene0::Update(const float deltaTime) {
 			}
 		}
 	}
-	//Prints player grounded state for debug purposes
-	std::cout << player->onGround << "\n";
 
-	//Camera stuff
+	//Prints player grounded state for debug purposes
+	//std::cout << player->onGround << "\n";
+
+	//----------------CAMEARA---------------------
+	
 	//Camera now follows you ಠ_ಠ
 	camera->Follow(player->pos);
+
+	//----------------PORTAL----------------------
 
 	if (portal && collision.CheckCollision(*player, *portal)) {
 		sceneComplete = true;
@@ -290,6 +321,8 @@ void Scene0::Render() const {
 	Vec3 screenCoords;
 	// Renders objects
 
+	//------------------------BACKGROUND-------------------------
+
 	for (int i = 0; i < backgrounds.size(); i += 1) {
 		screenCoords = camera->WorldToScreen(backgrounds[i]->pos);
 		square.x = screenCoords.x;
@@ -301,8 +334,9 @@ void Scene0::Render() const {
 		SDL_RenderTextureRotated(renderer, backgrounds[i]->GetTexture(), nullptr, &square, backgrounds[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
 
-	for (int i = 0; i < objects.size(); i += 1) {
+	//---------------------------BOXES---------------------------
 
+	for (int i = 0; i < objects.size(); i += 1) {
 		screenCoords = camera->WorldToScreen(objects[i]->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
@@ -313,9 +347,9 @@ void Scene0::Render() const {
 		SDL_RenderTextureRotated(renderer, objects[i]->GetTexture(), nullptr, &square, objects[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
 
-	// Renders platforms (same pattern)
-	for (int i = 0; i < platforms.size(); i += 1) {
+	//-------------------------PLATFORMS---------------------------
 
+	for (int i = 0; i < platforms.size(); i += 1) {
 		screenCoords = camera->WorldToScreen(platforms[i]->pos);
 		square.x = screenCoords.x;
 		square.y = screenCoords.y;
@@ -325,6 +359,9 @@ void Scene0::Render() const {
 		square.y -= square.h / 2;
 		SDL_RenderTextureRotated(renderer, platforms[i]->GetTexture(), nullptr, &square, platforms[i]->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
+
+	//---------------------------PORTAL----------------------------
+
 	if (portal) {
 		screenCoords = camera->WorldToScreen(portal->pos);
 		square.x = screenCoords.x;
@@ -336,6 +373,8 @@ void Scene0::Render() const {
 
 		SDL_RenderTextureRotated(renderer, portal->GetTexture(), nullptr, &square, portal->angleDeg, nullptr, SDL_FLIP_NONE);
 	}
+
+	//---------------------------PLAYER-----------------------------
 
 	screenCoords = camera->WorldToScreen(player->pos);
 	square.x = screenCoords.x;
