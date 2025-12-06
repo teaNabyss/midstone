@@ -70,6 +70,7 @@ void GameManager::Run() {
 			currentScene->OnDestroy();
 			delete currentScene;
 			currentScene = nullptr;
+			
 
 			switch (currentLevel) {
 			case 0:

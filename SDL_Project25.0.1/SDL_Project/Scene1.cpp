@@ -44,7 +44,8 @@ bool Scene1::OnCreate() {
 	background = new Entity();
 	background->pos = Vec3(0.0f, 16.0f, 0.0f);
 	background->SetImage("textures/background.png", renderer);
-	std::cout << "Backround created" << std::endl;
+	std::cout << "Background created" << std::endl;
+
 	//Create a player entity
 	player = new Entity();
 	player->SetImage("textures/PurpleMailSprite.png", renderer);

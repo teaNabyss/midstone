@@ -21,8 +21,9 @@ private:
 
 	Entity* player;
 	Entity* portal;
-	Collision collision;
 	Entity* background;
+	Entity* OtherBackground;
+	Collision collision;
 	Vec3 gravForce;
 
 	//movement booleans
@@ -37,6 +38,7 @@ private:
 	std::vector<Entity*> objects;
 	//Static platforms/level geometry
 	std::vector<Entity*> platforms;
+	std::vector<Entity*> backgrounds;
 
 	Camera* camera;
 	//SDL_FRect cameraSquare; //should've been FRect -> float (¬‿¬)

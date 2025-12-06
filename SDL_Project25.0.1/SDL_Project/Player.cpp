@@ -197,8 +197,6 @@ void Player::Render() const {
 	//SDL_FRect square;
 	//square.x = screenCoords.x;
 	//square.y = screenCoords.y;
-	//square.w = background->GetSurface()->w * 1.5f;
-	//square.h = background->GetSurface()->h * 1.5f;
 	//SDL_RenderTextureRotated(renderer, background->GetTexture(), nullptr, &square, background->angleDeg, nullptr, SDL_FLIP_NONE);
 
 	//Vec3 relativePos = camera->WorldToScreen(player->pos);
