@@ -77,6 +77,7 @@ bool Scene0::OnCreate() {
 	box1->mass = 2.0f;
 	box1->size = Vec3(2.0f, 2.0f, 0.0f);
 	box1->pos = Vec3(4.0f, 2.0f, 0.0f);
+	box1->vel = box1->acc = Vec3(0.0f, 0.0f, 0.0f);
 	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
 	box1->isStatic = false;
 	objects.emplace_back(box1);
@@ -205,6 +206,9 @@ void Scene0::HandleEvents(const SDL_Event& event) {
 			}
 			if (event.key.scancode == SDL_SCANCODE_SPACE) {
 				jumpInput = false;
+			}
+			if (event.key.scancode == SDL_SCANCODE_R) {
+				playerDeath = false;
 			}
 			break;
 	}
