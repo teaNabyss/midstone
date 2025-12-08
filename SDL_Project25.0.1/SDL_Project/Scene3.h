@@ -22,7 +22,6 @@ private:
 	Entity* player;
 	Entity* portal;
 	Entity* background;
-	Entity* OtherBackground;
 	Collision collision;
 	Vec3 gravForce;
 
@@ -41,6 +40,7 @@ private:
 	std::vector<Entity*> backgrounds;
 
 	Camera* camera;
+	bool flipHorizontal = false;
 	//SDL_FRect cameraSquare; //should've been FRect -> float
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;

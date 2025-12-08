@@ -71,22 +71,14 @@ bool Scene3::OnCreate() {
 	// Create the objects that will be rendered on the screen
 
 	//---------------------BACKGROUND----------------------
-	background = new Entity();
-	background->SetImage("textures/background.png", renderer);
-	background->pos = Vec3(15.0f, 8.0f, 0.0f);
-	background->size = Vec3(30.0f, 15.0f, 0.0f);
-	backgrounds.emplace_back(background);
-	std::cout << "Background created" << std::endl;
-
-	int numOfBackgrounds = 4;
-	for (int index = 1; index < numOfBackgrounds; index++) {
-		std::cout << "Background Index: " << index << std::endl;
-		OtherBackground = new Entity();
-		OtherBackground->SetImage("textures/background.png", renderer);
-		OtherBackground->pos = Vec3(backgrounds.back()->pos.x + 29.9f, 8.0f, 0.0f);
-		OtherBackground->size = Vec3(30.0f, 15.0f, 0.0f);
-		backgrounds.emplace_back(OtherBackground);
-		std::cout << "Background created" << std::endl;
+	for (int i = 0; i <= 5; i += 1) {
+		for (int j = 0; j <= 4; j += 1) {
+			background = new Entity();
+			background->SetImage("textures/background.png", renderer);
+			background->pos = Vec3(15.0f + (29.9f * i), 8.0f + (15.0f * j), 0.0f);
+			background->size = Vec3(30.0f, 15.0f, 0.0f);
+			backgrounds.emplace_back(background);
+		}
 	}
 
 
@@ -108,7 +100,7 @@ bool Scene3::OnCreate() {
 	box1->pos = box1->ogPos = Vec3(19.0f, 16.0f, 0.0f);
 	box1->isStatic = false;
 	box1->rewindTimer = 0.0f;
-	box1->rewindMaxTimer = 15.0f;
+	box1->rewindMaxTimer = 25.0f;
 	objects.emplace_back(box1);
 	auto box2 = new Entity();
 	box2->SetImage("textures/Crate.png", renderer);
@@ -163,84 +155,84 @@ bool Scene3::OnCreate() {
 
 	//-------------------PLATFORMS----------------
 	auto leftBorder = new Entity();
-	leftBorder->SetImage("textures/Crate.png", renderer);
+	leftBorder->SetImage("textures/Wall.png", renderer);
 	leftBorder->mass = 100.0f;
 	leftBorder->size = Vec3(1.0f, 30.0f, 0.0f);
 	leftBorder->pos = Vec3(0.0f, 16.0f, 0.0f);
 	leftBorder->isStatic = true;
 	platforms.emplace_back(leftBorder);
 	auto rightBorder = new Entity();
-	rightBorder->SetImage("textures/Crate.png", renderer);
+	rightBorder->SetImage("textures/Wall.png", renderer);
 	rightBorder->mass = 100.0f;
 	rightBorder->size = Vec3(1.0f, 30.0f, 0.0f);
 	rightBorder->pos = Vec3(63.5f, 16.0f, 0.0f);
 	rightBorder->isStatic = true;
 	platforms.emplace_back(rightBorder);
 	auto floor = new Entity();
-	floor->SetImage("textures/Crate.png", renderer);
+	floor->SetImage("textures/Platform.png", renderer);
 	floor->mass = 100.0f;
 	floor->size = Vec3(64.0f, 1.0f, 0.0f);
 	floor->pos = Vec3(32.0f, 0.5f, 0.0f);
 	floor->isStatic = true;
 	platforms.emplace_back(floor);
 	auto ceiling = new Entity();
-	ceiling->SetImage("textures/Crate.png", renderer);
+	ceiling->SetImage("textures/Platform.png", renderer);
 	ceiling->mass = 100.0f;
 	ceiling->size = Vec3(60.0f, 1.0f, 0.0f);
 	ceiling->pos = Vec3(30.0f, 30.0f, 0.0f);
 	ceiling->isStatic = true;
 	platforms.emplace_back(ceiling);
 	auto shelfFloor = new Entity();
-	shelfFloor->SetImage("textures/Crate.png", renderer);
+	shelfFloor->SetImage("textures/Platform.png", renderer);
 	shelfFloor->mass = 100.0f;
 	shelfFloor->size = Vec3(10.0f, 1.0f, 0.0f);
 	shelfFloor->pos = Vec3(20.0f, 19.0f, 0.0f);
 	shelfFloor->isStatic = true;
 	platforms.emplace_back(shelfFloor);
 	auto shelfLeftWall = new Entity();
-	shelfLeftWall->SetImage("textures/Crate.png", renderer);
+	shelfLeftWall->SetImage("textures/Wall.png", renderer);
 	shelfLeftWall->mass = 100.0f;
 	shelfLeftWall->size = Vec3(1.0f, 10.0f, 0.0f);
 	shelfLeftWall->pos = Vec3(15.0f, 24.5f, 0.0f);
 	shelfLeftWall->isStatic = true;
 	platforms.emplace_back(shelfLeftWall);
 	auto shelfRightWall = new Entity();
-	shelfRightWall->SetImage("textures/Crate.png", renderer);
+	shelfRightWall->SetImage("textures/Wall.png", renderer);
 	shelfRightWall->mass = 100.0f;
 	shelfRightWall->size = Vec3(1.0f, 10.0f, 0.0f);
 	shelfRightWall->pos = Vec3(25.0f, 24.5f, 0.0f);
 	shelfRightWall->isStatic = true;
 	platforms.emplace_back(shelfRightWall);
 	auto plat1 = new Entity();
-	plat1->SetImage("textures/Crate.png", renderer);
+	plat1->SetImage("textures/Platform.png", renderer);
 	plat1->mass = 100.0f;
 	plat1->size = Vec3(19.0f, 1.0f, 0.0f);
 	plat1->pos = Vec3(10.0f, 15.0f, 0.0f);
 	plat1->isStatic = true;
 	platforms.emplace_back(plat1);
 	auto plat2 = new Entity();
-	plat2->SetImage("textures/Crate.png", renderer);
+	plat2->SetImage("textures/Platform.png", renderer);
 	plat2->mass = 100.0f;
 	plat2->size = Vec3(6.0f, 1.0f, 0.0f);
 	plat2->pos = Vec3(3.5f, 7.0f, 0.0f);
 	plat2->isStatic = true;
 	platforms.emplace_back(plat2);
 	auto plat3 = new Entity();
-	plat3->SetImage("textures/Crate.png", renderer);
+	plat3->SetImage("textures/Platform.png", renderer);
 	plat3->mass = 100.0f;
 	plat3->size = Vec3(5.0f, 1.0f, 0.0f);
 	plat3->pos = Vec3(3.0f, 22.0f, 0.0f);
 	plat3->isStatic = true;
 	platforms.emplace_back(plat3);
 	auto plat4 = new Entity();
-	plat4->SetImage("textures/Crate.png", renderer);
+	plat4->SetImage("textures/Platform.png", renderer);
 	plat4->mass = 100.0f;
 	plat4->size = Vec3(5.0f, 1.0f, 0.0f);
 	plat4->pos = Vec3(58.5f, 7.0f, 0.0f);
 	plat4->isStatic = true;
 	platforms.emplace_back(plat4);
 	auto plat5 = new Entity();
-	plat5->SetImage("textures/Crate.png", renderer);
+	plat5->SetImage("textures/Platform.png", renderer);
 	plat5->mass = 100.0f;
 	plat5->size = Vec3(10.0f, 1.0f, 0.0f);
 	plat5->pos = Vec3(35.0f, 10.0f, 0.0f);
@@ -250,10 +242,10 @@ bool Scene3::OnCreate() {
 	// End Game Portal
 	//-----------------------PORTAL--------------------------
 	portal = new Entity();
-	portal->SetImage("textures/PurplePortal.png", renderer);
+	portal->SetImage("textures/PortalDoor.png", renderer);
 	portal->mass = 0.0f;
-	portal->size = Vec3(2.0f, 3.0f, 0.0f);
-	portal->pos = Vec3(3.0f, 24.0f, 0.0f);
+	portal->size = Vec3(3.0f, 3.0f, 0.0f);
+	portal->pos = Vec3(3.0f, 23.9f, 0.0f);
 	portal->isStatic = true;
 
 
@@ -323,9 +315,11 @@ void Scene3::HandleEvents(const SDL_Event& event) {
 	case SDL_EVENT_KEY_DOWN:
 		if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
 			movingLeft = true;
+			flipHorizontal = false;
 		}
 		if (event.key.scancode == SDL_SCANCODE_D || event.key.scancode == SDL_SCANCODE_RIGHT) {
 			movingRight = true;
+			flipHorizontal = true;
 		}
 		if (event.key.scancode == SDL_SCANCODE_SPACE) {
 			jumpInput = true;
@@ -539,8 +533,9 @@ void Scene3::Render() const {
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr,
+		(flipHorizontal) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 
 	// Update the screen
 	SDL_RenderPresent(renderer);
-}
+} 
