@@ -41,7 +41,8 @@ private:
 	std::vector<Entity*> backgrounds;
 
 	Camera* camera;
-	//SDL_FRect cameraSquare; //should've been FRect -> float (¬‿¬)
+	bool flipHorizontal = false;
+
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
 public:

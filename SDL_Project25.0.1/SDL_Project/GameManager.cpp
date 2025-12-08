@@ -164,7 +164,6 @@ void GameManager::OnDestroy(){
 		delete windowPtr;
 	}
 }
-//We don't need this here now (°ʖ°)
 
 //switch (event.type) {
 //case SDL_EVENT_KEY_DOWN:
