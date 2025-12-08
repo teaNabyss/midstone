@@ -109,7 +109,7 @@ bool Scene0::OnCreate() {
 	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
 	box1->isStatic = false;
 	box1->rewindTimer = 0.0f;
-	box1->rewindMaxTimer = 100.0f;
+	box1->rewindMaxTimer = 100.0f; /// just change this value 
 	objects.emplace_back(box1);
 	//Another box, now on a floating platform
 	auto box2 = new Entity();
@@ -172,9 +172,9 @@ bool Scene0::OnCreate() {
 	MIX_DestroyAudio(Music);
 
 	//------------------------CAMERA-------------------------
-	// ┬─┬ノ(ಠ_ಠノ)
+
 	camera = new Camera;
-	camera->cameraRect = {0,0,30,15};
+	camera->cameraRect = {player->pos.x,player->pos.y,30,15};
 	camera->pos = Vec3(camera->cameraRect.x, camera->cameraRect.y, 0.0f);
 	return true;
 }
@@ -212,7 +212,6 @@ void Scene0::OnDestroy() {
 	delete background;
 	background = nullptr;
 
-	// Destroy it (╯｀0´)╯( ┻━┻
 	delete camera;
 	camera = nullptr;
 }
