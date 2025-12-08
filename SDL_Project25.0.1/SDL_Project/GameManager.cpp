@@ -5,11 +5,6 @@
 #include "Scene1.h"
 #include "Scene2.h"
 #include "Scene3.h"
-#include "Scene4.h"
-#include "Scene5.h"
-#include "Scene6.h"
-#include "Scene7.h"
-#include "Scene8.h"
 #include <iostream>
 
 GameManager::GameManager() {
@@ -81,16 +76,7 @@ void GameManager::Run() {
 				currentScene = new Scene2(windowPtr->GetSDL_Window()); break;
 			case 3:
 				currentScene = new Scene3(windowPtr->GetSDL_Window()); break;
-			case 4:
-				currentScene = new Scene4(windowPtr->GetSDL_Window()); break;
-			case 5:
-				currentScene = new Scene5(windowPtr->GetSDL_Window()); break;
-			case 6:
-				currentScene = new Scene6(windowPtr->GetSDL_Window()); break;
-			case 7:
-				currentScene = new Scene7(windowPtr->GetSDL_Window()); break;
-			case 8:
-				currentScene = new Scene8(windowPtr->GetSDL_Window()); break;
+
 			default:
 				isRunning = false; 
 				break;
@@ -118,16 +104,7 @@ void GameManager::Run() {
 					currentScene = new Scene2(windowPtr->GetSDL_Window()); break;
 				case 3:
 					currentScene = new Scene3(windowPtr->GetSDL_Window()); break;
-				case 4:
-					currentScene = new Scene4(windowPtr->GetSDL_Window()); break;
-				case 5:
-					currentScene = new Scene5(windowPtr->GetSDL_Window()); break;
-				case 6:
-					currentScene = new Scene6(windowPtr->GetSDL_Window()); break;
-				case 7:
-					currentScene = new Scene7(windowPtr->GetSDL_Window()); break;
-				case 8:
-					currentScene = new Scene8(windowPtr->GetSDL_Window()); break;
+
 				default:
 					isRunning = false;
 					break;
