@@ -116,7 +116,7 @@ bool Scene2::OnCreate() {
 	box2->SetImage("textures/Crate.png", renderer);
 	box2->mass = 2.0f;
 	box2->size = Vec3(2.0f, 2.0f, 0.0f);
-	box2->pos = box2->ogPos = Vec3(14.0f, 7.0f, 0.0f);
+	box2->pos = box2->ogPos = Vec3(14.0f, 2.0f, 0.0f);
 	box2->isStatic = false;
 	box2->rewindTimer = 0.0f;
 	box2->rewindMaxTimer = 15.0f;
