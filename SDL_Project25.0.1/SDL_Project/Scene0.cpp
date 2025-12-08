@@ -152,7 +152,7 @@ bool Scene0::OnCreate() {
 	portal->SetImage("textures/PurplePortal.png", renderer);
 	portal->mass = 0.0f;
 	portal->size = Vec3(2.0f, 3.0f, 0.0f);
-	portal->pos = Vec3(28.0f, 15.0f, 0.0f);
+	portal->pos = Vec3(28.0f, 5.0f, 0.0f);
 	portal->isStatic = true;
 
 
@@ -172,7 +172,6 @@ bool Scene0::OnCreate() {
 	MIX_DestroyAudio(Music);
 
 	//------------------------CAMERA-------------------------
-
 	camera = new Camera;
 	camera->cameraRect = {player->pos.x,player->pos.y,30,15};
 	camera->pos = Vec3(camera->cameraRect.x, camera->cameraRect.y, 0.0f);
@@ -221,9 +220,11 @@ void Scene0::HandleEvents(const SDL_Event& event) {
 		case SDL_EVENT_KEY_DOWN:
 			if (event.key.scancode == SDL_SCANCODE_A || event.key.scancode == SDL_SCANCODE_LEFT) {
 				movingLeft = true;
+				flipHorizontal = false;
 			}
 			if (event.key.scancode == SDL_SCANCODE_D || event.key.scancode == SDL_SCANCODE_RIGHT) {
 				movingRight = true;
+				flipHorizontal = true;
 			}
 			if (event.key.scancode == SDL_SCANCODE_SPACE) {
 				jumpInput = true;
@@ -361,7 +362,6 @@ void Scene0::Update(const float deltaTime) {
 
 	//----------------CAMEARA---------------------
 	
-	//Camera now follows you ಠ_ಠ
 	camera->Follow(player->pos);
 
 	//----------------PORTAL----------------------
@@ -439,7 +439,8 @@ void Scene0::Render() const {
 	square.h = player->size.y * std::abs(camera->GetProjectionMatrix()[5]);
 	square.x -= square.w / 2;
 	square.y -= square.h / 2;
-	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(renderer, player->GetTexture(), nullptr, &square, player->angleDeg, nullptr, 
+		(flipHorizontal) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 
 	// Update the screen
 	SDL_RenderPresent(renderer);

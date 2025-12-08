@@ -12,7 +12,7 @@
 using namespace MATH;
 class Scene1 : public Scene {
 private:
-	SDL_Window *window;
+	SDL_Window* window;
 	float xAxis;
 	float yAxis;
 
@@ -21,25 +21,28 @@ private:
 
 	Entity* player;
 	Entity* portal;
-	Collision collision;
 	Entity* background;
+	Entity* OtherBackground;
+	//Entity* DecorBox;
+	Collision collision;
+	Vec3 gravForce;
 
 	//movement booleans
 	bool movingLeft;
 	bool movingRight;
 	bool jumpInput;
-	bool isJumping;
-	bool isOnGround;
 	bool sceneComplete = false;
-	
+	bool playerDeath = false;
+	float jumpStrength;
 
 	//Non-Static objects
 	std::vector<Entity*> objects;
 	//Static platforms/level geometry
 	std::vector<Entity*> platforms;
-
+	std::vector<Entity*> backgrounds;
 
 	Camera* camera;
+	bool flipHorizontal = false;
 
 	MIX_Mixer* mixer;
 	float master_volume = 0.25f;
@@ -47,6 +50,9 @@ public:
 	Scene1(SDL_Window* sdlWindow);
 	~Scene1();
 	bool IsComplete() const override { return sceneComplete; }
+	bool PlayerDeath() const override { return playerDeath; }
+	//Rewinds an object
+	bool RewindObj(int i);
 	bool OnCreate() override;
 	void OnDestroy() override;
 	void HandleEvents(const SDL_Event& event) override;
