@@ -78,7 +78,7 @@ bool Scene1::OnCreate() {
 	backgrounds.emplace_back(background);
 	std::cout << "Background created" << std::endl;
 
-	int numOfBackgrounds = 4;
+	int numOfBackgrounds = 2;
 	for (int index = 1; index < numOfBackgrounds; index++) {
 		std::cout << "Background Index: " << index << std::endl;
 		OtherBackground = new Entity();
@@ -105,7 +105,7 @@ bool Scene1::OnCreate() {
 	box1->SetImage("textures/Crate.png", renderer);
 	box1->mass = 2.0f;
 	box1->size = Vec3(2.0f, 2.0f, 0.0f);
-	box1->pos = box1->ogPos = Vec3(10.0f, 12.0f, 0.0f);
+	box1->pos = box1->ogPos = Vec3(10.0f, 10.0f, 0.0f);
 	//AD: Be warned that putting a static entity into the object array applies gravity to a static object, causing collisons to behave irregularly
 	box1->isStatic = false;
 	objects.emplace_back(box1);
@@ -115,7 +115,7 @@ bool Scene1::OnCreate() {
 	DecorBox1->SetImage("textures/Crate.png", renderer);
 	DecorBox1->mass = 2.0f;
 	DecorBox1->size = Vec3(1.0f, 1.0f, 0.0f);
-	DecorBox1->pos = DecorBox1->ogPos = Vec3(18.0f, 14.5f, 0.0f);
+	DecorBox1->pos = DecorBox1->ogPos = Vec3(18.5f, 14.5f, 0.0f);
 	DecorBox1->isStatic = false;
 	objects.emplace_back(DecorBox1);
 	auto DecorBox2 = new Entity();
@@ -129,10 +129,24 @@ bool Scene1::OnCreate() {
 	DecorBox3->SetImage("textures/Crate.png", renderer);
 	DecorBox3->mass = 2.0f;
 	DecorBox3->size = Vec3(1.0f, 1.0f, 0.0f);
-	DecorBox3->pos = DecorBox3->ogPos = Vec3(21.0f, 14.5f, 0.0f);
+	DecorBox3->pos = DecorBox3->ogPos = Vec3(20.0f, 14.5f, 0.0f);
 	DecorBox3->isStatic = false;
 	objects.emplace_back(DecorBox3);
 
+	auto DecorBox4 = new Entity();
+	DecorBox4->SetImage("textures/crates2.png", renderer);
+	DecorBox4->mass = 2.0f;
+	DecorBox4->size = Vec3(2.0f, 2.0f, 0.0f);
+	DecorBox4->pos = DecorBox4->ogPos = Vec3(1.3f, 11.5f, 0.0f);
+	DecorBox4->isStatic = false;
+	objects.emplace_back(DecorBox4);
+	auto DecorBox5 = new Entity();
+	DecorBox5->SetImage("textures/crates2.png", renderer);
+	DecorBox5->mass = 2.0f;
+	DecorBox5->size = Vec3(2.0f, 2.0f, 0.0f);
+	DecorBox5->pos = DecorBox5->ogPos = Vec3(2.3f, 11.5f, 0.0f);
+	DecorBox5->isStatic = false;
+	objects.emplace_back(DecorBox5);
 
 	//-------------------Level platforms----------------
 
@@ -194,13 +208,20 @@ bool Scene1::OnCreate() {
 	platform3->pos = Vec3(36.0f, 9.5f, 0.0f);
 	platform3->isStatic = true;
 	platforms.emplace_back(platform3);
-	auto Decor = new Entity();
-	Decor->SetImage("textures/platform.png", renderer);
-	Decor->mass = 100.0f;
-	Decor->size = Vec3(4.0f, 1.0f, 0.0f);
-	Decor->pos = Vec3(19.5f, 13.0f, 0.0f);
-	Decor->isStatic = true;
-	platforms.emplace_back(Decor);
+	auto Decor1 = new Entity();
+	Decor1->SetImage("textures/platform.png", renderer);
+	Decor1->mass = 100.0f;
+	Decor1->size = Vec3(4.0f, 1.0f, 0.0f);
+	Decor1->pos = Vec3(19.5f, 13.0f, 0.0f);
+	Decor1->isStatic = true;
+	platforms.emplace_back(Decor1);
+	auto Decor2 = new Entity();
+	Decor2->SetImage("textures/platform.png", renderer);
+	Decor2->mass = 100.0f;
+	Decor2->size = Vec3(4.5f, 0.5f, 0.0f);
+	Decor2->pos = Vec3(2.7f, 10.0f, 0.0f);
+	Decor2->isStatic = true;
+	platforms.emplace_back(Decor2);
 
 	//-----------------------PORTAL--------------------------
 	portal = new Entity();
