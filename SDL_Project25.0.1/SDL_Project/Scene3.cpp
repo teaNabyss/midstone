@@ -140,6 +140,26 @@ bool Scene3::OnCreate() {
 	largeBox2->pos = largeBox2->ogPos = Vec3(34.0f, 14.0f, 0.0f);
 	largeBox2->isStatic = false;
 	objects.emplace_back(largeBox2);
+	auto decoBox1 = new Entity();
+	decoBox1->SetImage("textures/Crate.png", renderer);
+	decoBox1->mass = 2.0f;
+	decoBox1->size = Vec3(2.0f, 2.0f, 0.0f);
+	decoBox1->pos = decoBox1->ogPos = Vec3(18.5f, 22.0f, 0.0f);
+	decoBox1->isStatic = false;
+	decoBox1->rewindTimer = 0.0f;
+	decoBox1->rewindMaxTimer = 18.0f;
+	decoBox1->autoRewind = true;
+	objects.emplace_back(decoBox1);
+	auto decoBox2 = new Entity();
+	decoBox2->SetImage("textures/Crate.png", renderer);
+	decoBox2->mass = 2.0f;
+	decoBox2->size = Vec3(2.0f, 2.0f, 0.0f);
+	decoBox2->pos = decoBox2->ogPos = Vec3(21.0f, 21.0f, 0.0f);
+	decoBox2->isStatic = false;
+	decoBox2->rewindTimer = 0.0f;
+	decoBox2->rewindMaxTimer = 11.0f;
+	decoBox2->autoRewind = true;
+	objects.emplace_back(decoBox2);
 
 	//-------------------PLATFORMS----------------
 	auto leftBorder = new Entity();
@@ -219,13 +239,13 @@ bool Scene3::OnCreate() {
 	plat4->pos = Vec3(58.5f, 7.0f, 0.0f);
 	plat4->isStatic = true;
 	platforms.emplace_back(plat4);
-	auto plat6 = new Entity();
-	plat6->SetImage("textures/Crate.png", renderer);
-	plat6->mass = 100.0f;
-	plat6->size = Vec3(10.0f, 1.0f, 0.0f);
-	plat6->pos = Vec3(35.0f, 10.0f, 0.0f);
-	plat6->isStatic = true;
-	platforms.emplace_back(plat6);
+	auto plat5 = new Entity();
+	plat5->SetImage("textures/Crate.png", renderer);
+	plat5->mass = 100.0f;
+	plat5->size = Vec3(10.0f, 1.0f, 0.0f);
+	plat5->pos = Vec3(35.0f, 10.0f, 0.0f);
+	plat5->isStatic = true;
+	platforms.emplace_back(plat5);
 
 	// End Game Portal
 	//-----------------------PORTAL--------------------------
