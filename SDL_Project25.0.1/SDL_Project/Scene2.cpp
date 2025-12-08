@@ -95,7 +95,7 @@ bool Scene2::OnCreate() {
 	player->SetImage("textures/PurpleMailSprite.png", renderer);
 	player->mass = 5.0f;
 	player->size = Vec3(2.0f, 3.0f, 0.0f);
-	player->pos = player->ogPos = Vec3(14.0f, 8.0f, 0.0f);
+	player->pos = player->ogPos = Vec3(9.0f, 2.0f, 0.0f);
 	player->isPlayer = true;
 	player->isStatic = false;
 	player->onGround = true;
@@ -116,10 +116,10 @@ bool Scene2::OnCreate() {
 	box2->SetImage("textures/Crate.png", renderer);
 	box2->mass = 2.0f;
 	box2->size = Vec3(2.0f, 2.0f, 0.0f);
-	box2->pos = box2->ogPos = Vec3(20.0f, 7.0f, 0.0f);
+	box2->pos = box2->ogPos = Vec3(14.0f, 7.0f, 0.0f);
 	box2->isStatic = false;
 	box2->rewindTimer = 0.0f;
-	box2->rewindMaxTimer = 17.0f;
+	box2->rewindMaxTimer = 15.0f;
 	objects.emplace_back(box2);
 	
 
@@ -166,19 +166,12 @@ bool Scene2::OnCreate() {
 	wall1->isStatic = true;
 	platforms.emplace_back(wall1);
 
-	auto wall2 = new Entity();
-	wall2->SetImage("textures/wall.png", renderer);
-	wall2->mass = 100.0f;
-	wall2->size = Vec3(2.0f, 2.0f, 0.0f);
-	wall2->pos = Vec3(20.0f, 2.0f, 0.0f);
-	wall2->isStatic = true;
-	platforms.emplace_back(wall2);
 
 	auto wall3 = new Entity();
 	wall3->SetImage("textures/wall.png", renderer);
 	wall3->mass = 100.0f;
 	wall3->size = Vec3(2.0f, 9.0f, 0.0f);
-	wall3->pos = Vec3(20.0f, 10.5f, 0.0f);
+	wall3->pos = Vec3(16.0f, 10.5f, 0.0f);
 	wall3->isStatic = true;
 	platforms.emplace_back(wall3);
 
@@ -384,7 +377,7 @@ void Scene2::Update(const float deltaTime) {
 			if (objects[i]->rewindTimer < 0.0f) {
 				//If a player is teleported on in the process, kill the player
 				if (!RewindObj(i)) {
-					//TODO: Read below
+					playerDeath = true;
 					std::cout << "Player would die! Implementation to restart the scene is needed!\n";
 				}
 			}
@@ -448,6 +441,7 @@ void Scene2::Update(const float deltaTime) {
 			//Kills the player if collision resolution returns false
 			if (!collision.ResolveCollision(*player, *objects[i])) {
 				//TODO: Read below
+				playerDeath = true;
 				std::cout << "Player would die! Implementation to restart the scene is needed!\n";
 			}
 			//If the object can rewind and it's timer hasn't started, starts its timer

@@ -369,7 +369,7 @@ void Scene3::Update(const float deltaTime) {
 			if (objects[i]->rewindTimer < 0.0f) {
 				//If a player is teleported on in the process, kill the player
 				if (!RewindObj(i)) {
-					//TODO: Read below
+					playerDeath = true;
 					std::cout << "Player would die! Implementation to restart the scene is needed!\n";
 				}
 			}
@@ -433,6 +433,7 @@ void Scene3::Update(const float deltaTime) {
 			//Kills the player if collision resolution returns false
 			if (!collision.ResolveCollision(*player, *objects[i])) {
 				//TODO: Read below
+				playerDeath = true;
 				std::cout << "Player would die! Implementation to restart the scene is needed!\n";
 			}
 			//If the object can rewind and it's timer hasn't started, starts its timer
