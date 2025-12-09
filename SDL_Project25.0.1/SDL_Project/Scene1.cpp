@@ -71,22 +71,14 @@ bool Scene1::OnCreate() {
 	// Create the objects that will be rendered on the screen
 
 	//---------------------BACKGROUND----------------------
-	background = new Entity();
-	background->SetImage("textures/background.png", renderer);
-	background->pos = Vec3(15.0f, 7.1f, 0.0f);
-	background->size = Vec3(30.0f, 15.0f, 0.0f);
-	backgrounds.emplace_back(background);
-	std::cout << "Background created" << std::endl;
-
-	int numOfBackgrounds = 2;
-	for (int index = 1; index < numOfBackgrounds; index++) {
-		std::cout << "Background Index: " << index << std::endl;
-		OtherBackground = new Entity();
-		OtherBackground->SetImage("textures/background.png", renderer);
-		OtherBackground->pos = Vec3(backgrounds.back()->pos.x + 29.9f, 7.1f, 0.0f);
-		OtherBackground->size = Vec3(30.0f, 15.0f, 0.0f);
-		backgrounds.emplace_back(OtherBackground);
-		std::cout << "Background created" << std::endl;
+	for (int i = 0; i <= 5; i += 1) {
+		for (int j = 0; j <= 4; j += 1) {
+			background = new Entity();
+			background->SetImage("textures/background.png", renderer);
+			background->pos = Vec3(15.0f + (29.9f * i), 8.0f + (15.0f * j), 0.0f);
+			background->size = Vec3(30.0f, 15.0f, 0.0f);
+			backgrounds.emplace_back(background);
+		}
 	}
 
 
@@ -228,7 +220,7 @@ bool Scene1::OnCreate() {
 	portal->SetImage("textures/PortalDoor.png", renderer);
 	portal->mass = 0.0f;
 	portal->size = Vec3(3.0f, 3.0f, 0.0f);
-	portal->pos = Vec3(36.5f, 11.5f, 0.0f);
+	portal->pos = Vec3(36.5f, 11.4f, 0.0f);
 	portal->isStatic = true;
 
 

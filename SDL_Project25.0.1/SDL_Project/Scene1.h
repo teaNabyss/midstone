@@ -22,7 +22,6 @@ private:
 	Entity* player;
 	Entity* portal;
 	Entity* background;
-	Entity* OtherBackground;
 	//Entity* DecorBox;
 	Collision collision;
 	Vec3 gravForce;
